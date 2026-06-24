@@ -44,7 +44,7 @@ export function TopNav({
         const atBottom = y + vh >= document.documentElement.scrollHeight - 200;
         setVisible(atTop || atBottom);
       } else {
-        setVisible(y > vh * 2);
+        setVisible(y > vh * 1);
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });

@@ -53,7 +53,7 @@ const ORG_SCHEMA = JSON.stringify({
 
 function Index() {
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ORG_SCHEMA }} />
       <FilmGrain />
       <CustomCursor />
