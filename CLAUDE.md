@@ -3,10 +3,23 @@
 ## Project Overview
 
 **Stack:** TanStack Start + Vite + Supabase + Framer Motion + Tailwind CSS
-**Deploy target:** Cloudflare Pages via Nitro
+**Deploy target:** Cloudflare Workers via Nitro (NOT Pages — do not use the Pages flow)
 **Domain:** avanashowroom.com
 **Package manager:** npm only — never bun
 **Dev server:** `npm run dev` → localhost:8080
+
+---
+
+## Deployment (locked Jun 2026)
+
+**Build command:** `npm run build`
+**Deploy command:** `npx wrangler deploy`
+**Worker entry:** `dist/server/server.js` (Nitro cloudflare preset output — 3.3 kB entry, imports from `dist/server/assets/`)
+**Static assets:** `dist/client/` (served via Workers Assets at the edge)
+
+`wrangler.jsonc` in the project root is the Workers config — points wrangler at the pre-built output (`main`, `assets.directory`). Without it, `wrangler deploy` tries to auto-configure by modifying `vite.config.ts`, which fails because `@lovable.dev/vite-tanstack-config` wraps the plugins array and there is no bare `plugins: []` to patch.
+
+`bun.lock` is excluded from the repo (`.gitignore`). Cloudflare uses npm 10 with `package-lock.json`. Do not regenerate or commit a bun.lock. `lru-cache@^11` is pinned in `devDependencies` — npm 10's `npm ci` enforces optional peer deps that npm 11 silently skips; removing this pin will break Cloudflare installs.
 
 ---
 
@@ -43,6 +56,12 @@
 | `src/components/ConsultingCallModal.tsx` | Consulting booking modal — 30 min/$250 or 60 min/$500; bookingType:"consulting" |
 | `src/integrations/supabase/client.ts` | Supabase client |
 | `src/integrations/supabase/types.ts` | Generated Supabase types — see note below |
+| `src/routes/admin/index.tsx` | Admin dashboard — revenue, ops health, lead tables. Loader-protected (redirects to `/admin/login` if not authed). |
+| `src/routes/admin/login.tsx` | Admin login form — POST to `/api/admin/login`, HttpOnly cookie session |
+| `src/lib/admin-data.ts` | `fetchAdminData` createServerFn — fetches all 8 Supabase tables server-side, computes metrics |
+| `server/middleware/admin-auth.ts` | Nitro middleware — guards all `/admin/*` routes, checks `admin_session` cookie vs `ADMIN_TOKEN` |
+| `server/routes/api/admin/login.ts` | POST handler — compares password to `ADMIN_PASSWORD`, sets 7-day cookie |
+| `server/routes/api/admin/logout.ts` | Clears `admin_session` cookie, redirects to `/admin/login` |
 | `public/robots.txt` | Allows all crawlers incl. 12 named AI bots; references sitemap |
 | `public/sitemap.xml` | All 5 routes with priorities |
 | `public/llms.txt` | Plain-text AVANA profile for AI context windows |
@@ -349,7 +368,7 @@ Do not deploy without clearing these. They work on local Node dev and silently f
 
 5. **All API keys must be added to Cloudflare Pages env vars** (not just local `.env`). Missing keys = silent runtime failures.
 
-   Required: `RESEND_API_KEY`, `PAGESPEED_API_KEY`, `ANTHROPIC_API_KEY`, `VITE_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_ENV`, `PAYPAL_WEBHOOK_ID`, `SUPABASE_SERVICE_ROLE_KEY`, Supabase URL + anon key.
+   Required: `RESEND_API_KEY`, `PAGESPEED_API_KEY`, `ANTHROPIC_API_KEY`, `VITE_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_ENV`, `PAYPAL_WEBHOOK_ID`, `SUPABASE_SERVICE_ROLE_KEY`, Supabase URL + anon key, `ADMIN_PASSWORD` (the login password for `/admin`), `ADMIN_TOKEN` (the session cookie value — generate a random 32+ char string, keep it secret).
 
 ---
 
