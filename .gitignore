@@ -23,6 +23,13 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Bun lockfile — project uses npm (package-lock.json)
+bun.lock
+
+# Large source/original video files (use web-optimised versions in public/ instead)
+photo video assets/
+public/erika-pena-x-avana.mp4
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
