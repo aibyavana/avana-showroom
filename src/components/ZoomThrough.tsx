@@ -79,7 +79,7 @@ export function ZoomThrough() {
           className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{ top: `${LOGO_ANCHOR_Y_PCT}%` }}
         >
-          <AvanaLogo style={{ width: "clamp(495px, 63vw, 855px)" }} />
+          <AvanaLogo style={{ width: "clamp(min(88vw, 495px), 63vw, 855px)" }} />
         </div>
         <div className="relative z-10 mx-auto flex h-full max-w-[1600px] flex-col justify-end px-8 pb-[14vh] md:px-16">
           <h1
@@ -128,7 +128,7 @@ export function ZoomThrough() {
           animate={{ opacity: [0.80, 1, 0.80] }}
           transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
         >
-          <AvanaLogo style={{ width: "clamp(495px, 63vw, 855px)" }} />
+          <AvanaLogo style={{ width: "clamp(min(88vw, 495px), 63vw, 855px)" }} />
         </motion.div>
 
         {/* Door panels — slide inward to close on the scene */}

@@ -119,122 +119,96 @@ export function BrandsGallery() {
     };
     measure();
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    // iOS Safari: address bar hide/show changes innerHeight via visualViewport
+    const vv = window.visualViewport;
+    if (vv) vv.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      if (vv) vv.removeEventListener("resize", measure);
+    };
   }, []);
 
   // Rail travel mapped across the pinned scroll distance.
   const x = useTransform(scrollYProgress, [RAIL_START, RAIL_END], [0, -maxTranslate]);
 
-  // Mobile: vertical stack — no sticky rail
+  // Single unified layout — scroll-driven horizontal rail on all screen sizes.
+  // Previously split into hidden md:block (desktop rail) + md:hidden (mobile vertical stack).
+  // The mobile-only section caused railRef to have scrollWidth=0 (display:none) so
+  // travel=0 → section height collapsed to a white gap. Now the rail is always visible
+  // and measured correctly at any viewport width.
   return (
     <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
-      {/* Desktop: sticky horizontal rail */}
-      <div className="hidden md:block">
-        <div ref={ref} className="relative" style={{ height: sectionHeight }}>
-          <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
-            <div className="px-12 pt-20 lg:px-20">
-              <div className="mb-3 flex items-center gap-4 overflow-hidden">
-                <motion.p
-                  initial={reduce ? false : { opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  style={{
-                    color: GOLD,
-                    fontFamily: "Arial, Helvetica, sans-serif",
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.32em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  The Collective
-                </motion.p>
-                <motion.span
-                  aria-hidden
-                  initial={reduce ? false : { scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-                  style={{
-                    display: "inline-block",
-                    width: "10vw",
-                    height: "1px",
-                    backgroundColor: GOLD,
-                    transformOrigin: "left center",
-                  }}
-                />
-              </div>
-              <div style={{ overflow: "hidden" }}>
-                <motion.h2
-                  initial={reduce ? false : { y: "100%" }}
-                  whileInView={{ y: "0%" }}
-                  viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-                  style={{
-                    fontFamily: "Arial, Helvetica, sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(2.5rem, 6vw, 5rem)",
-                    letterSpacing: "-0.02em",
-                    lineHeight: 1,
-                    color: WARM_GREY,
-                  }}
-                >
-                  AGENCY BRANDS
-                </motion.h2>
-              </div>
-            </div>
-
-            <div className="flex flex-1 items-center overflow-hidden">
-              <motion.div
-                ref={railRef}
-                className="flex items-center gap-[4vw] pl-[8vw] pr-[8vw]"
-                style={reduce ? undefined : { x }}
+      <div ref={ref} className="relative" style={{ height: sectionHeight }}>
+        <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
+          {/* Header — responsive padding */}
+          <div className="px-6 pt-14 md:px-12 lg:px-20 md:pt-20">
+            <div className="mb-3 flex items-center gap-4 overflow-hidden">
+              <motion.p
+                initial={reduce ? false : { opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  color: GOLD,
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.32em",
+                  textTransform: "uppercase",
+                }}
               >
-                {BRANDS.map((b) => (
-                  <BrandCard key={b.slug} brand={b} />
-                ))}
-                {/* Closing endcap: rail stops when logo's right edge hits viewport */}
-                <div className="flex flex-shrink-0 items-center">
-                  <AvanaLogo style={{ width: "clamp(380px, 42vw, 580px)" }} />
-                </div>
-
-              </motion.div>
+                The Collective
+              </motion.p>
+              <motion.span
+                aria-hidden
+                initial={reduce ? false : { scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+                style={{
+                  display: "inline-block",
+                  width: "10vw",
+                  height: "1px",
+                  backgroundColor: GOLD,
+                  transformOrigin: "left center",
+                }}
+              />
+            </div>
+            <div style={{ overflow: "hidden" }}>
+              <motion.h2
+                initial={reduce ? false : { y: "100%" }}
+                whileInView={{ y: "0%" }}
+                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+                style={{
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(2rem, 6vw, 5rem)",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1,
+                  color: WARM_GREY,
+                }}
+              >
+                AGENCY BRANDS
+              </motion.h2>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Mobile: simple vertical stack */}
-      <div className="md:hidden px-6 py-20">
-        <p
-          className="mb-3"
-          style={{
-            color: GOLD,
-            fontFamily: "Arial, Helvetica, sans-serif",
-            fontSize: "0.7rem",
-            letterSpacing: "0.32em",
-            textTransform: "uppercase",
-          }}
-        >
-          The Collective
-        </p>
-        <h2
-          className="mb-12"
-          style={{
-            fontFamily: "Arial, Helvetica, sans-serif",
-            fontWeight: 700,
-            fontSize: "2.5rem",
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-            color: WARM_GREY,
-          }}
-        >
-          AGENCY BRANDS
-        </h2>
-        <div className="flex flex-col gap-8">
-          {BRANDS.map((b) => (
-            <BrandCard key={b.slug} brand={b} />
-          ))}
+          {/* Horizontal rail — cards slide left as user scrolls down */}
+          <div className="flex flex-1 items-center overflow-hidden">
+            <motion.div
+              ref={railRef}
+              className="flex items-center gap-[6vw] pl-[5vw] pr-[5vw] md:gap-[4vw] md:pl-[8vw] md:pr-[8vw]"
+              style={reduce ? undefined : { x }}
+            >
+              {BRANDS.map((b) => (
+                <BrandCard key={b.slug} brand={b} />
+              ))}
+              {/* Closing endcap: rail stops when logo's right edge hits viewport */}
+              <div className="flex flex-shrink-0 items-center">
+                <AvanaLogo style={{ width: "clamp(min(80vw, 380px), 42vw, 580px)" }} />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

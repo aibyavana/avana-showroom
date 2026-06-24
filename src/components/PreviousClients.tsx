@@ -3,9 +3,6 @@ import { EASE_SULTRY, DUR_SLOW, DUR_HOVER, DELAY_WITHHOLD } from "@/lib/motion";
 import { GOLD } from "@/lib/tokens";
 
 // ── Tunables ─────────────────────────────────────────────────────────────
-const LOGO_HEIGHT = 52;  // px — bounding box; mask-size:contain scales within
-const LOGO_WIDTH  = 160; // px
-
 const SILVER = "linear-gradient(135deg, #E8E8E8 0%, #A8A8A8 30%, #D4D4D4 65%, #909090 100%)";
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -16,6 +13,19 @@ const CLIENTS = [
   { name: "Capittana",        src: "/clients/capittana.svg",        href: "https://capittana.com/" },
   { name: "Minimale Animale", src: "/clients/minimale-animale.png", href: "https://minimaleanimale.com/" },
 ];
+
+const MASK_PROPS = (src: string) => ({
+  background: SILVER,
+  WebkitMaskImage: `url(${src})`,
+  maskImage: `url(${src})`,
+  WebkitMaskSize: "contain",
+  maskSize: "contain",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskPosition: "center",
+  maskPosition: "center",
+  maskMode: "alpha" as const,
+});
 
 export function PreviousClients() {
   return (
@@ -38,46 +48,36 @@ export function PreviousClients() {
           Previous Clients
         </motion.p>
 
-        <ul className="flex items-center justify-between">
-          {CLIENTS.map(({ name, src, href }, i) => (
-            <motion.li
-              key={name}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 0.85, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{
-                duration: DUR_SLOW,
-                ease: EASE_SULTRY,
-                delay: DELAY_WITHHOLD + i * 0.12,
-              }}
-              whileHover={{ opacity: 1, transition: { duration: DUR_HOVER, ease: EASE_SULTRY } }}
-              className="select-none"
-              style={{ flexShrink: 0 }}
-            >
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={name}
-                style={{
-                  display: "block",
-                  width: LOGO_WIDTH,
-                  height: LOGO_HEIGHT,
-                  background: SILVER,
-                  WebkitMaskImage: `url(${src})`,
-                  maskImage: `url(${src})`,
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
-                  maskPosition: "center",
-                  maskMode: "alpha",
+        {/* Mobile: horizontal scroll strip — prevents 5×160px logos from
+            expanding body scrollWidth on 375px screens */}
+        <div className="overflow-x-auto md:overflow-visible -mx-6 px-6 md:mx-0 md:px-0">
+          <ul className="flex items-center gap-10 min-w-max md:min-w-0 md:gap-0 md:justify-between">
+            {CLIENTS.map(({ name, src, href }, i) => (
+              <motion.li
+                key={name}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 0.85, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{
+                  duration: DUR_SLOW,
+                  ease: EASE_SULTRY,
+                  delay: DELAY_WITHHOLD + i * 0.12,
                 }}
-              />
-            </motion.li>
-          ))}
-        </ul>
+                whileHover={{ opacity: 1, transition: { duration: DUR_HOVER, ease: EASE_SULTRY } }}
+                className="select-none flex-shrink-0"
+              >
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={name}
+                  className="block w-[110px] h-10 md:w-[160px] md:h-[52px]"
+                  style={MASK_PROPS(src)}
+                />
+              </motion.li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

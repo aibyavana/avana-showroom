@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { DUR_SLOW, EASE_SULTRY, DELAY_WITHHOLD } from "@/lib/motion";
 
@@ -19,6 +20,18 @@ export function Reveal({
   "aria-hidden": ariaHidden,
 }: RevealProps) {
   const reduce = useReducedMotion();
+  // SSR guard: render plain div until client JS is ready so SSR HTML
+  // never contains opacity:0 elements that stay invisible on slow mobile.
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => { setIsClient(true); }, []);
+
+  if (!isClient) {
+    return (
+      <div className={className} style={style} aria-hidden={ariaHidden}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -27,7 +40,7 @@ export function Reveal({
       aria-hidden={ariaHidden}
       initial={reduce ? false : { opacity: 0, y: 32, filter: "blur(4px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{
         duration: DUR_SLOW,
         ease: EASE_SULTRY,

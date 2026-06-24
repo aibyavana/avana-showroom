@@ -48,7 +48,7 @@ export function HeroIntro() {
         }}
       />
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1600px] flex-col justify-center px-8 py-[14vh] md:px-16">
+      <div className="relative mx-auto flex min-h-[65vh] md:min-h-screen max-w-[1600px] flex-col justify-center px-8 py-12 md:py-[14vh] md:px-16">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,7 +60,7 @@ export function HeroIntro() {
             style={{
               fontFamily: "Arial, Helvetica, sans-serif",
               fontWeight: 700,
-              fontSize: "clamp(1.25rem, 2.2vw, 2.2rem)",
+              fontSize: "clamp(1.6rem, 2.2vw, 2.2rem)",
               letterSpacing: "-0.025em",
               lineHeight: 1.15,
               color: "#F2EDE5",

@@ -457,10 +457,10 @@ export function Founder() {
         </Reveal>
       </div>
 
-      {/* "The Interlude" bridge */}
+      {/* "The Interlude" bridge — desktop only; overlaps mobile CTAs */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center"
         style={{ bottom: "8vh" }}
       >
         <motion.div
