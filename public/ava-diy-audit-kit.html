@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ava · The DIY Store Audit Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --merlot:#5A0A2A; --burgundy:#8B3A4A; --rose:#D4707A; --coral:#FF9A8B;
+    --navy:#1A1A2E; --near-black:#0A0A0F; --true-black:#05050A;
+    --gradient:linear-gradient(135deg,#5A0A2A 0%,#8B3A4A 25%,#D4707A 60%,#FF9A8B 100%);
+    --ok:#6FCF97; --warn:#F2C94C; --crit:#FF6B6B;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--near-black); color:#fff; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .doc { max-width:1040px; margin:0 auto; }
+
+  .cover { min-height:100vh; background:var(--true-black); display:grid; grid-template-rows:auto 1fr auto; padding:56px 64px; position:relative; overflow:hidden; }
+  .cover::after { content:''; position:absolute; top:0; left:64px; width:3px; height:100%; background:var(--gradient); opacity:0.9; }
+  .cover-glow { position:absolute; top:-15%; right:-10%; width:60%; height:70%; background:radial-gradient(circle,rgba(90,10,42,0.45) 0%,transparent 65%); pointer-events:none; }
+  .cover-top { display:flex; justify-content:space-between; align-items:flex-start; padding-left:28px; position:relative; z-index:2; }
+  .cover-monogram { font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:#fff; }
+  .cover-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); text-align:right; line-height:1.8; }
+  .cover-body { display:flex; flex-direction:column; justify-content:center; padding-left:28px; gap:36px; position:relative; z-index:2; }
+  .cover-kicker { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--coral); opacity:0.85; }
+  .cover-headline { font-family:'Inter',sans-serif; font-size:clamp(48px,7.5vw,88px); font-weight:900; line-height:0.92; letter-spacing:-3px; color:#fff; text-transform:uppercase; }
+  .cover-headline em { font-style:normal; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .cover-sub { font-size:15px; font-weight:400; color:rgba(255,255,255,0.5); max-width:560px; line-height:1.8; }
+  .cover-foot { display:flex; justify-content:space-between; align-items:flex-end; padding-left:28px; position:relative; z-index:2; }
+  .cover-meta { font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); letter-spacing:2px; text-transform:uppercase; line-height:2; }
+
+  .section { padding:72px 64px; border-bottom:1px solid rgba(255,255,255,0.05); position:relative; }
+  .section::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--gradient); opacity:0.5; }
+  .section-num { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#fff; margin-bottom:20px; display:block; font-weight:500; }
+  .section-title { font-family:'Inter',sans-serif; font-size:clamp(26px,4vw,42px); font-weight:800; letter-spacing:-1.5px; line-height:1.0; color:#fff; text-transform:uppercase; margin-bottom:16px; }
+  .section-title em { font-style:normal; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .section-intro { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.85; margin-bottom:28px; }
+
+  .steps { display:flex; flex-direction:column; gap:2px; margin-top:8px; }
+  .step { background:rgba(255,255,255,0.025); padding:22px 32px; display:flex; gap:24px; align-items:flex-start; }
+  .step-num { font-family:'Inter',sans-serif; font-size:24px; font-weight:900; color:rgba(255,255,255,0.16); line-height:1; flex:0 0 36px; }
+  .step-text { font-size:14px; color:rgba(255,255,255,0.62); line-height:1.7; }
+  .step-text strong { color:#fff; font-weight:600; }
+
+  .pcard { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); margin-bottom:2px; }
+  .pcard-q { padding:22px 32px 8px; }
+  .pcard-qlabel { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#fff; margin-bottom:10px; font-weight:500; }
+  .pcard-qtitle { font-family:'Inter',sans-serif; font-size:19px; font-weight:700; color:#fff; letter-spacing:-0.3px; line-height:1.35; }
+  .prompt { background:var(--true-black); margin:10px 32px; padding:22px 26px; border-left:3px solid rgba(139,58,74,0.7); position:relative; }
+  .prompt-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:#fff; margin-bottom:14px; font-weight:500; }
+  .prompt-text { font-family:'DM Mono',monospace; font-size:14px; color:rgba(255,200,190,0.95); line-height:1.9; }
+  .pcard-guide { padding:10px 32px 26px; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .guide-col-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; font-weight:500; }
+  .guide-look .guide-col-label { color:var(--warn); }
+  .guide-do .guide-col-label { color:var(--ok); }
+  .guide-text { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.7; }
+  .guide-text strong { color:rgba(255,255,255,0.88); font-weight:600; }
+
+  .fixchat { background:rgba(90,10,42,0.14); border:1px solid rgba(139,58,74,0.22); padding:16px 32px; margin:8px 32px 22px; display:flex; gap:14px; align-items:flex-start; }
+  .fixchat-icon { font-family:'DM Mono',monospace; font-size:11px; color:var(--coral); flex:0 0 auto; margin-top:2px; letter-spacing:1px; }
+  .fixchat-text { font-size:13px; color:rgba(255,255,255,0.7); line-height:1.7; }
+  .fixchat-text strong { color:#fff; font-weight:600; }
+
+  .redflag { background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.18); padding:16px 32px; margin:8px 32px 20px; }
+  .redflag-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--crit); margin-bottom:8px; font-weight:500; }
+  .redflag-text { font-size:13px; color:rgba(255,255,255,0.62); line-height:1.7; }
+  .redflag-text strong { color:#fff; font-weight:600; }
+
+  .manual { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.05); padding:24px 32px; margin-bottom:2px; }
+  .manual-head { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+  .manual-title { font-family:'Inter',sans-serif; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.3px; }
+  .manual-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+  .manual-text { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.75; }
+  .manual-text strong { color:rgba(255,255,255,0.88); font-weight:600; }
+  .manual-text code { font-family:'DM Mono',monospace; font-size:13px; color:var(--coral); background:rgba(255,255,255,0.05); padding:2px 7px; }
+
+  .catscore { background:var(--true-black); border:1px solid rgba(139,58,74,0.25); padding:24px 32px; margin:18px 0 2px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .catscore-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#fff; line-height:1.6; }
+  .catscore-label span { color:rgba(255,255,255,0.5); display:block; font-size:10px; margin-top:4px; text-transform:none; letter-spacing:0.3px; }
+  .catscore-input { font-family:'Inter',sans-serif; font-size:32px; font-weight:900; color:rgba(255,255,255,0.25); white-space:nowrap; }
+  .catscore-blank { display:inline-block; width:54px; border-bottom:2px solid rgba(255,154,139,0.5); }
+
+  .cta { background:var(--true-black); padding:72px 64px; position:relative; overflow:hidden; }
+  .cta::after { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--gradient); }
+  .cta-glow { position:absolute; bottom:-30%; left:20%; width:50%; height:80%; background:radial-gradient(circle,rgba(90,10,42,0.35) 0%,transparent 65%); pointer-events:none; }
+  .cta-kicker { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--coral); opacity:0.85; margin-bottom:24px; position:relative; z-index:2; }
+  .cta-headline { font-family:'Inter',sans-serif; font-size:clamp(30px,5vw,50px); font-weight:900; letter-spacing:-2px; line-height:1.0; text-transform:uppercase; color:#fff; max-width:720px; margin-bottom:28px; position:relative; z-index:2; }
+  .cta-headline em { font-style:normal; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .cta-body { font-size:15px; color:rgba(255,255,255,0.6); max-width:580px; line-height:1.9; margin-bottom:36px; position:relative; z-index:2; }
+  .cta-offer { display:inline-flex; flex-direction:column; gap:4px; border:1px solid rgba(139,58,74,0.3); padding:28px 36px; position:relative; z-index:2; background:rgba(90,10,42,0.1); }
+  .cta-offer-price { font-family:'Inter',sans-serif; font-size:36px; font-weight:900; letter-spacing:-1.5px; color:#fff; }
+  .cta-offer-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.55); }
+
+  .doc-footer { padding:44px 64px; display:flex; justify-content:space-between; align-items:center; background:var(--true-black); }
+  .footer-name { font-family:'Playfair Display',serif; font-style:italic; font-size:18px; color:#fff; }
+  .footer-meta { font-family:'DM Mono',monospace; font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:2px; text-transform:uppercase; text-align:right; line-height:1.8; }
+
+  @media (max-width:760px){
+    .section,.cover,.cta{padding-left:32px;padding-right:32px;}
+    .pcard-guide{grid-template-columns:1fr;gap:18px;}
+    .prompt,.redflag,.fixchat{margin-left:20px;margin-right:20px;}
+    .catscore{flex-direction:column;align-items:flex-start;gap:12px;}
+  }
+  @media print { body{background:#fff;} .section,.cover,.cta,.doc-footer,.pcard{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="cover">
+    <div class="cover-glow"></div>
+    <div class="cover-top">
+      <div class="cover-monogram">Ava</div>
+      <div class="cover-tag">The DIY Store Audit Kit<br>Self-Serve · Sidekick-Powered<br>by AVANA</div>
+    </div>
+    <div class="cover-body">
+      <div class="cover-kicker">Find Every Leak. Supercharge Your Store.</div>
+      <h1 class="cover-headline">Audit your<br>own store.<br><em>Like we would.</em></h1>
+      <p class="cover-sub">The exact questions we ask when we audit a fashion brand turned into copy-paste prompts for Shopify's built-in AI, Sidekick. Find your revenue leaks, your margin bleed, your broken data, and your retention gaps. Sidekick can even execute many of the fixes for you.</p>
+    </div>
+    <div class="cover-foot">
+      <div class="cover-meta">Ava · by AVANA<br>Self-Serve Edition</div>
+      <div class="cover-meta" style="text-align:right;">10 Categories<br>Score Each One</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">00 / Before You Start</span>
+    <h2 class="section-title">How this <em>works.</em></h2>
+    <p class="section-intro">This kit uses Sidekick the AI assistant already built into your Shopify admin. No new tools, no technical skill. If you can copy and paste, you can run this audit. Read these five rules first; the chat rule in particular will save you hours.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">In your Shopify admin, open <strong>Sidekick</strong> (top bar, or search "Sidekick"). It reads your live store data and answers questions about it.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Work through the categories <strong>in order</strong> they're sequenced biggest-leak-first. Paste each prompt <strong>one at a time</strong> and wait for the full answer.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>One fix = one chat.</strong> When Sidekick finishes a diagnosis it will often offer to make the fix. When you say yes, do it in a <strong>dedicated chat for that one fix</strong> start a fresh Sidekick chat and name it for the fix (e.g. "Fix · Meta titles"). That way you can return to that exact thread to run, pause, or re-run it without losing your place. Don't pile multiple fixes into one chat they get tangled.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Some checks happen <strong>outside Sidekick</strong> (robots.txt, AI search visibility). They're marked and take two minutes each.</div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-text">Each category ends with a <strong>scorecard</strong> rate yourself 1-10 before you fix, and again after. That before/after is your proof the work mattered.</div></div>
+    </div>
+    <div class="redflag" style="margin-left:0;margin-right:0;margin-top:24px;">
+      <div class="redflag-label">One honest note on accuracy</div>
+      <div class="redflag-text">Sidekick samples large catalogs (often ~250 products at a time) because of data limits. Where that happens, treat the result as <strong>directional</strong> the pattern is real even if the exact count isn't. For a precise count, export your full catalog as CSV (Products &rarr; Export &rarr; All products). We flag every prompt where this matters.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">01 / Category One · Biggest Lever</span>
+    <h2 class="section-title">Checkout <em>&amp; cart recovery.</em></h2>
+    <p class="section-intro">For most stores this is the single biggest pool of recoverable money revenue that reached the doorstep and left. Start here because the dollar figure you find is the one that makes everything else feel urgent.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 1.1 · The hook</div><div class="pcard-qtitle">Abandonment rate &amp; lost revenue</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">For full-year 2025, what percentage of checkout sessions were abandoned, and how many sessions is that? Using my 2025 average order value, estimate the total revenue value of those abandoned checkouts, and estimate how much I could recover at a conservative 10% recovery rate.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Anything above ~60% abandonment is high and means real recoverable money. <strong>This dollar figure is usually the most motivating number in the entire audit.</strong></div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Write down the number. If you don't have a clean 3-step abandoned-checkout sequence, this is your fastest, highest-dollar fix even 10% recovery typically pays for itself many times over.</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 1.2</div><div class="pcard-qtitle">Is a recovery flow even running?</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">Do I have an active abandoned-checkout recovery flow (email or SMS)? When was it last edited, is it enabled, and how many recovery messages does it send? If I have more than one cart or checkout flow, tell me whether they overlap and might be firing on the same customer at once.</div></div>
+      <div class="fixchat"><div class="fixchat-icon">[ FIX ]</div><div class="fixchat-text"><strong>If Sidekick offers to build or fix the flow open a new chat named "Fix · Checkout recovery"</strong> and do it there, so you can return to that thread to test and refine the sequence.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">No active flow at all (the worst and most common case). Or multiple overlapping cart flows that confuse customers and dilute recovery.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Consolidate into one clean 3-step sequence: reminder (1hr) · social proof/urgency (24hr) · incentive (48-72hr). Kill the duplicates.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Checkout &amp; Cart Recovery<span>Flow active, sequenced, no overlap, abandonment recovering?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">02 / Category Two · The Door</span>
+    <h2 class="section-title">Funnel <em>&amp; conversion.</em></h2>
+    <p class="section-intro">Cart recovery recaptures money at the door. This widens the door. If most visitors never even add to cart, you're paying to bring people in and losing them before they engage and a sudden drop here often means something quietly broke.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 2.1</div><div class="pcard-qtitle">The full funnel, stage by stage</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">For 2025, walk me through my conversion funnel stage by stage: what percentage of sessions reached add-to-cart, reached checkout, and completed a purchase? What's my overall conversion rate? Tell me which single stage has the biggest drop-off.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">An overall conversion rate well under 1% with most loss at the <strong>session to add-to-cart</strong> stage means a top-of-funnel problem (findability, product clarity, page experience), not a checkout problem.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">If the biggest drop is before add-to-cart, the fix is product clarity and navigation, not checkout. Note the weakest stage that's where to focus.</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 2.2 · Urgent check</div><div class="pcard-qtitle">Did something recently break?</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">Compare my checkout sessions originating from collection pages and product pages over the last few months. Have they dropped sharply versus the prior period? Are there any sudden week-over-week declines in add-to-cart or checkout sessions from specific regions or page types that started recently?</div></div>
+      <div class="redflag"><div class="redflag-label">Why this matters</div><div class="redflag-text">A sharp, recent drop in checkout sessions from collection/product pages often means a <strong>theme update or navigation change broke something</strong> a buy button, a link, a mobile layout. This is urgent and fixable, and it can crater conversion overnight.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">A sudden 80%+ decline in sessions from a specific page type, or a region declining several weeks in a row. Sudden = something changed, not gradual market drift.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">If you see a sharp recent drop, check your theme edit history and recent app installs immediately. Test the buy flow on mobile and desktop yourself before optimizing anything else.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Funnel / Conversion<span>Healthy add-to-cart rate, no broken-funnel red flags?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">03 / Category Three · Margin</span>
+    <h2 class="section-title">Discount <em>margin.</em></h2>
+    <p class="section-intro">Not a revenue leak a margin leak. Every discount dollar given to a customer who'd have paid full price is pure profit gone. This is the leak founders almost never measure.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 3.1</div><div class="pcard-qtitle">Total discount erosion</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">In 2025, what total dollar amount did discounts reduce my gross sales by, and what percentage of gross sales is that? Break it down by discount code so I can see which codes drove the most reduction.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Total discount as a share of gross sales. Above ~10% is worth scrutiny. Which specific codes eat the most especially any always-on or sitewide codes.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Identify codes that are always available those are the ones subsidizing buyers who'd convert anyway. Note them for the incrementality check next.</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 3.2</div><div class="pcard-qtitle">Incrementality: are discounts earning their keep?</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">For my most-used discount codes, what is the average order value of orders that used a discount versus orders that didn't? Are discounted orders bringing in new customers, or mostly being used by existing/returning customers who already buy from me?</div></div>
+      <div class="fixchat"><div class="fixchat-icon">[ FIX ]</div><div class="fixchat-text"><strong>If you decide to retire or restructure a code open a new chat named "Fix · Discount [code]"</strong> so the change is isolated and reversible.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Discounts mostly used by <strong>returning customers</strong> = you're paying loyal buyers to do what they'd do anyway. Discounts that pull lower AOV than full-price orders erode margin twice.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Shift always-on discounts toward new-customer-only or first-order codes. Reserve incentives for the abandoned-cart flow where they actually recover lost sales.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Discount Margin<span>Discounts targeted, incremental, not subsidizing loyal buyers?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">04 / Category Four · Spend</span>
+    <h2 class="section-title">Paid traffic <em>&amp; attribution.</em></h2>
+    <p class="section-intro">Before judging whether ads work, you have to know they're being measured. A "0% conversion on paid" reading is usually a tracking problem, not a performance one and you can't optimize what you can't see.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 4.1</div><div class="pcard-qtitle">Where traffic &amp; revenue actually come from</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">For 2025, break down my sessions and revenue by traffic source: direct, social, search, paid, email, referral. How many paid sessions did I have and what did they convert at? Does the paid number look suspiciously low compared to my actual ad activity?</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">A tiny "paid" session count next to a huge "social" or "direct" count usually means <strong>paid social is being mis-bucketed</strong> because UTM tags are inconsistent. 0% paid conversion on very low volume is a measurement artifact, not proof ads fail.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Don't kill ad spend based on this number. Fix the measurement first (next check), then judge performance on clean data.</div></div>
+      </div>
+    </div>
+    <div class="manual">
+      <div class="manual-head"><div class="manual-title">Check 4.2 · UTM consistency</div><div class="manual-tag">Outside Sidekick · 5 min</div></div>
+      <div class="manual-text">Open the link/URL settings in each ad platform (Meta, TikTok, Google, Pinterest) and check whether every campaign uses consistent <code>utm_source</code> and <code>utm_medium</code> tags. <strong>What to look for:</strong> ads with no UTMs, or inconsistent ones, get dumped into "Direct" or "Social" and disappear from your paid reporting. <strong>What to do:</strong> standardize UTM tagging across every campaign so paid traffic attributes correctly then your conversion data becomes trustworthy.</div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Paid Traffic &amp; Attribution<span>UTMs consistent, paid measurable, sources accurate?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">05 / Category Five · Trust</span>
+    <h2 class="section-title">Returns <em>&amp; fit.</em></h2>
+    <p class="section-intro">Returns cost money twice the refund and the lost trust. Concentrated returns on specific products almost always signal a fixable fit or imagery gap, not a quality problem.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 5.1</div><div class="pcard-qtitle">Return rate &amp; worst offenders</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">In 2025, what was my total dollar value of returns and how many units were returned? Which specific products drove the most returns by dollar value and by unit count? Is my return rate high or low relative to fashion benchmarks?</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Whether returns are concentrated in a <strong>few specific SKUs</strong> (often maxi dresses, fitted items) versus spread evenly. Concentration points to fit/sizing or a gap between photos and reality. A low total is a genuine strength worth noting.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">For repeat-return products: add detailed sizing guidance, more accurate imagery, fit notes. If returns are already low, mark this category strong and move on don't manufacture a problem.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Returns &amp; Fit<span>Low return rate, no concentrated problem SKUs?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">06 / Category Six · Foundation</span>
+    <h2 class="section-title">Product data <em>&amp; SEO.</em></h2>
+    <p class="section-intro">The layer everything depends on. If search engines and your own tools can't read your products, nothing downstream performs and thin product data is a hidden cause of the funnel leak in Category 2.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 6.1 · Precise count</div><div class="pcard-qtitle">SEO metadata coverage</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">How many of my products are missing a meta title, a meta description, or both? Give me the exact count for each and what percentage of my total catalog that is.</div></div>
+      <div class="fixchat"><div class="fixchat-icon">[ FIX ]</div><div class="fixchat-text"><strong>If Sidekick offers to write metadata open a new chat named "Fix · Meta titles"</strong> and work through bestsellers there. Keep it as its own thread so you can batch through the catalog over multiple sittings.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Most stores find <strong>nearly the entire catalog</strong> missing both. Shopify auto-generates from short titles that say nothing to search engines or AI.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Usually the #1 data fix. Bulk-write meta titles + descriptions (CSV export + import is fastest for the full catalog; Sidekick for bestsellers now).</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 6.2 · Sampled</div><div class="pcard-qtitle">Description depth</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">How many of my products have descriptions under 150 words, and how many under 50 words? Show me the five shortest descriptions in my catalog.</div></div>
+      <div class="redflag"><div class="redflag-label">Sampling note</div><div class="redflag-text">Sidekick may scan only ~250 products. If the sample shows ~99% under 50 words, assume it's catalog-wide. Confirm with a CSV export.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">One-line or empty descriptions. AI and shoppers both need <strong>materials, styling, occasion, brand story</strong> thin copy means products don't get found or added to carts.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Set a 300-word target for revenue-driving products. Use your single best description as the template. Rewrite bestsellers first.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Product Data &amp; SEO<span>Metadata present, descriptions rich and searchable?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">07 / Category Seven · Discovery</span>
+    <h2 class="section-title">AI <em>&amp; GEO visibility.</em></h2>
+    <p class="section-intro">The fastest-growing discovery channel in fashion, and the one almost no brand under $1M is competing in. These checks happen outside Sidekick and take two minutes each.</p>
+    <div class="manual">
+      <div class="manual-head"><div class="manual-title">Check 7.1 · Are AI crawlers blocked?</div><div class="manual-tag">Outside Sidekick · 2 min</div></div>
+      <div class="manual-text">Go to <code>yourstore.com/robots.txt</code>. Search for <strong>GPTBot, ChatGPT-User, PerplexityBot,</strong> and <strong>Claude-Web</strong>. If any sit under a "Disallow" rule, AI engines can't read your store. <strong>What to do:</strong> if blocked, that's a direct fix your store can't appear in AI search until crawlers are allowed.</div>
+    </div>
+    <div class="manual">
+      <div class="manual-head"><div class="manual-title">Check 7.2 · Structured data present?</div><div class="manual-tag">Outside Sidekick · 3 min</div></div>
+      <div class="manual-text">Open Google's <strong>Rich Results Test</strong>, paste 3-5 product URLs, check whether product JSON-LD is detected. <strong>What to look for:</strong> Shopify's native schema only works when titles and descriptions are complete so if Category 6 scored badly, schema is likely broken too. <strong>What to do:</strong> completing metadata usually repairs it automatically.</div>
+    </div>
+    <div class="manual">
+      <div class="manual-head"><div class="manual-title">Check 7.3 · The GEO visibility test</div><div class="manual-tag">Outside Sidekick · 3 min</div></div>
+      <div class="manual-text">Ask <strong>ChatGPT</strong> and <strong>Perplexity</strong> a question a customer would: "best resort jewelry under $200," "where to buy handmade beach necklaces." Screenshot results. <strong>What to look for:</strong> whether your brand appears at all. <strong>What to do:</strong> invisibility here is the opportunity fastest-growing channel, almost no competition in your category yet.</div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · AI / GEO Visibility<span>Crawlers allowed, schema valid, brand surfaces in AI search?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">08 / Category Eight · Retention</span>
+    <h2 class="section-title">Email <em>&amp; lifecycle.</em></h2>
+    <p class="section-intro">Your existing customers are your highest-intent, lowest-cost revenue. This is usually where the biggest immediate upside hides missing flows every comparable brand runs. Works for Shopify Email or Klaviyo; adjust the tool name in prompts.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 8.1</div><div class="pcard-qtitle">Active flow inventory &amp; performance</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">List my active email automation flows grouped by type: welcome, abandoned cart, browse abandonment, post-purchase, win-back. For each, show open rate, click rate, and unsubscribe rate, and compare to fashion benchmarks (automations: ~40-55% open, 3-6% click, under 0.5% unsubscribe).</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Your <strong>best performer</strong> note it, it tells you what your audience wants. Welcome emails with unsubscribe over 1-2%. Flows with strong opens but near-zero clicks. Flows with almost no sends (broken triggers).</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Double down on what works. Fix high-unsub welcomes. Refresh weak CTAs. Investigate any flow with near-zero sends.</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 8.2 · The big gap</div><div class="pcard-qtitle">Missing standard flows</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">Compare my active flows against the standard DTC fashion set: 3-5 email welcome series, 3-step abandoned cart, abandoned checkout, browse abandonment, a 3-4 email post-purchase series (thank you, care/styling, cross-sell, review request), and a 2-3 email win-back. Which am I completely missing or only partially running?</div></div>
+      <div class="fixchat"><div class="fixchat-icon">[ FIX ]</div><div class="fixchat-text"><strong>Build each missing flow in its own chat</strong> "Fix · Post-purchase series," "Fix · Win-back," etc. One flow per thread so you can refine each without tangling them together.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">A <strong>thin post-purchase sequence</strong> is the most common big gap one thank-you and nothing else, leaving cross-sell, reviews, and replenishment unbuilt for your highest-intent audience.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Build post-purchase first highest certainty because that audience already opens. Then complete partial sequences into full multi-step flows.</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 8.3</div><div class="pcard-qtitle">Retention economics</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">What is my returning customer rate, and what is the average lifetime value of repeat customers (2+ orders) versus my overall average order value? Roughly how much is it worth to convert a first-time buyer into a second purchase?</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Repeat LTV is usually 2-3x a single order confirm the multiple. A returning rate under ~30% is room to grow toward 40%+.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">This number justifies retention investment. A post-purchase flow timed to 30-45 days after first order (peak repurchase intent) is the highest-leverage move.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Email &amp; Lifecycle<span>All standard flows live, performing, retention growing?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">09 / Category Nine · Hygiene</span>
+    <h2 class="section-title">Catalog <em>hygiene.</em></h2>
+    <p class="section-intro">Messy tags and collections quietly break collection rules, filters, automations, and any AI layer reading your store. Unglamorous, but it's what makes everything else reliable.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 9.1 · Sampled</div><div class="pcard-qtitle">Tag taxonomy</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">Summarize tag usage across my catalog. How many unique tags exist? Which are used on only 1-2 products? Any products with no tags? Flag duplicate tags from inconsistent casing (e.g. "earrings" vs "Earrings"), misspelled tags, and leftover promo tags like "25% off" or "BLACK FRIDAY."</div></div>
+      <div class="redflag"><div class="redflag-label">Sampling note</div><div class="redflag-text">For 100% coverage, export all products as CSV and audit the tag column there. The sample still reveals the patterns.</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Case duplicates (<strong>earrings / Earrings / EARRING</strong>), misspellings used as live tags, stale sale tags, app-generated system tags inflating the count.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Pick one casing convention, bulk-standardize. Fix misspellings. Strip stale promo tags (ideally with a Flow that auto-removes them post-campaign).</div></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 9.2</div><div class="pcard-qtitle">Collections &amp; duplicates</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">Review my collection structure: how many collections exist and how many products in each? Flag empty collections, internal/operational collections that shouldn't be customer-facing, stale promo collections, duplicate or overlapping collections, and any two collections sharing the same ID. Separately, are there duplicate or near-identical product titles in my catalog?</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Backend collections exposed on the storefront ("OUT OF STOCK," "DO NOT PUBLISH"), stale sale collections, near-duplicates like "ALL DRESSES" vs "DRESSES," and a bloated total (100+) where ~40-50 would do.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Hide/delete internal collections, archive stale sales, consolidate duplicates. Target 40-50 clean customer-facing collections. Merge or differentiate duplicate product titles.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Catalog Hygiene<span>Tags consistent, collections lean, no duplicates?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">10 / Category Ten · Targeting</span>
+    <h2 class="section-title">Customer <em>segmentation.</em></h2>
+    <p class="section-intro">You can't send the right message to the right customer without the right segments. This also surfaces data-quality gaps that quietly undermine all your geographic and lifecycle targeting.</p>
+    <div class="pcard">
+      <div class="pcard-q"><div class="pcard-qlabel">Prompt 10.1</div><div class="pcard-qtitle">Segment coverage &amp; data gaps</div></div>
+      <div class="prompt"><div class="prompt-label">Paste into Sidekick</div><div class="prompt-text">How many customer segments do I have and what are they based on? Am I missing any of these high-value types: product-category buyers (jewelry vs apparel), lifecycle segments (new 0-90 days, active, lapsed 6-18 months, lost 18+), and new-vs-repeat beyond simple order count? Also: what percentage of my customers have no country or location data?</div></div>
+      <div class="pcard-guide">
+        <div class="guide-look"><div class="guide-col-label">What to look for</div><div class="guide-text">Missing lifecycle and category segments. A high <strong>unknown-location percentage</strong> (often from guest checkouts) that quietly breaks all your geo-targeting and inflates or undercounts regional segments.</div></div>
+        <div class="guide-do"><div class="guide-col-label">What to do</div><div class="guide-text">Build lifecycle and category segments. Close the location gap with a post-purchase survey or optional checkout field so geo-targeting is actually accurate.</div></div>
+      </div>
+    </div>
+    <div class="catscore"><div class="catscore-label">Score · Customer Segmentation<span>Lifecycle + category segments built, location data complete?</span></div><div class="catscore-input"><span class="catscore-blank"></span> / 10</div></div>
+  </div>
+
+  <div class="section">
+    <span class="section-num">11 / Tally It Up</span>
+    <h2 class="section-title">Your store health <em>score.</em></h2>
+    <p class="section-intro">Add up your ten category scores and divide by ten. That's your overall Store Health number the same scale we use for paying clients. Re-run this whole kit after you fix things, and watch it climb. The gap between your first score and your fixed score is the value you created.</p>
+    <div class="catscore" style="border-color:rgba(139,58,74,0.35);"><div class="catscore-label" style="font-size:13px;">Overall Store Health<span style="font-size:11px;">Sum of 10 categories divided by 10</span></div><div class="catscore-input" style="font-size:44px;"><span class="catscore-blank" style="width:72px;"></span> / 10</div></div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-glow"></div>
+    <div class="cta-kicker">When You're Ready to Stop Doing It Yourself</div>
+    <h2 class="cta-headline">You found the leaks.<br><em>Ava fixes them and then watches.</em></h2>
+    <p class="cta-body">This kit shows you what's wrong across all ten categories. If running it left you thinking "this is a lot" that's the point. The Done-For-You Store Fix cleans the foundation and fixes the highest-dollar leaks for you, then Ava stays on to prepare the next move each week. Your $297 credits toward it.</p>
+    <div class="cta-offer">
+      <div class="cta-offer-price">from $1,500</div>
+      <div class="cta-offer-label">Done-For-You Store Fix · we run every category &amp; fix it · $297 kit credits toward it</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div>
+      <div class="footer-name">Ava</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);letter-spacing:2px;text-transform:uppercase;margin-top:6px;">The DIY Store Audit Kit · by AVANA</div>
+    </div>
+    <div class="footer-meta">
+      Self-Serve Edition · Sidekick-Powered<br>
+      Works with Shopify Email &amp; Klaviyo<br>
+      One fix = one chat · Score before &amp; after
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

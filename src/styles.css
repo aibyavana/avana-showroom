@@ -1,0 +1,500 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --font-display: 'Archivo', Arial, Helvetica, sans-serif;
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --background: #F7F4EF;
+  --foreground: #0A0A0A;
+  --gold: #B8902E;
+  --gold-gradient: linear-gradient(
+    135deg,
+    #6B4F18 0%,
+    #B8902E 12%,
+    #E8C36A 26%,
+    #FFF4C2 38%,
+    #D4AF37 50%,
+    #8C6D1F 62%,
+    #C9A24A 76%,
+    #6B4F18 90%,
+    #2E2208 100%
+  );
+}
+
+@layer base {
+  * {
+    border-color: color-mix(in oklab, #0A0A0A 10%, transparent);
+  }
+
+  html, body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    cursor: none;
+  }
+
+  a, button, [role="button"] {
+    cursor: none;
+  }
+}
+
+@layer components {
+  .text-gold-gradient {
+    background: var(--gold-gradient);
+    background-size: 250% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08));
+    animation: gold-shimmer 9s ease-in-out infinite;
+  }
+
+  @keyframes gold-shimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .text-gold-gradient { animation: none; }
+  }
+
+  .avana-logo-gold {
+    width: min(86vw, 1100px);
+    aspect-ratio: 1920 / 1068;
+    background: var(--gold-gradient);
+    background-size: 250% 100%;
+    background-position: 0% 50%;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08));
+    animation: gold-shimmer 9s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avana-logo-gold { animation: none; }
+  }
+
+  /* Metallic shimmer for block elements (borders, lines, fills) */
+  .gold-metallic-line {
+    background: var(--gold-gradient);
+    background-size: 250% 100%;
+    background-position: 0% 50%;
+    animation: gold-shimmer 9s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gold-metallic-line { animation: none; }
+  }
+
+  /* Metallic black shimmer — for use on gold-background sections */
+  .text-dark-gradient {
+    background: linear-gradient(90deg, #0A0A0F 0%, #2A2A2A 28%, #555555 50%, #2A2A2A 72%, #0A0A0F 100%);
+    background-size: 250% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gold-shimmer 9s ease-in-out infinite;
+  }
+
+  .dark-metallic-line {
+    background: linear-gradient(90deg, #0A0A0F 0%, #2A2A2A 28%, #555555 50%, #2A2A2A 72%, #0A0A0F 100%);
+    background-size: 250% 100%;
+    background-position: 0% 50%;
+    animation: gold-shimmer 9s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .text-dark-gradient { animation: none; }
+    .dark-metallic-line  { animation: none; }
+  }
+
+  /* ── ExecutiveTilesSection — hub + ring ─────────────────────────── */
+  .exec-anim .exec-hub  { opacity: 0; transform: scale(0.65); transform-origin: center; }
+  .exec-anim .exec-node { opacity: 0; transform: scale(0.65); transform-origin: center; }
+  .exec-anim .exec-spoke { opacity: 0; stroke-dashoffset: 200; }
+
+  .exec-building .exec-hub {
+    animation:
+      execNodeIn     0.6s cubic-bezier(0.22,1,0.36,1) 0s   forwards,
+      execBreathe    5s  ease-in-out                  0.8s infinite,
+      wbEdgeShimmer  7s  linear                       0.8s infinite;
+  }
+  .exec-building .exec-node-0 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.30s forwards; }
+  .exec-building .exec-node-1 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.40s forwards; }
+  .exec-building .exec-node-2 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.50s forwards; }
+  .exec-building .exec-node-3 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.60s forwards; }
+  .exec-building .exec-node-4 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.70s forwards; }
+  .exec-building .exec-node-5 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.80s forwards; }
+  .exec-building .exec-node-6 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.90s forwards; }
+  .exec-building .exec-node-7 { animation: execNodeIn 0.5s cubic-bezier(0.22,1,0.36,1) 1.00s forwards; }
+
+  .exec-building .exec-spoke-0 { animation: execSpokeIn 0.4s ease-out 0.52s forwards; }
+  .exec-building .exec-spoke-1 { animation: execSpokeIn 0.4s ease-out 0.62s forwards; }
+  .exec-building .exec-spoke-2 { animation: execSpokeIn 0.4s ease-out 0.72s forwards; }
+  .exec-building .exec-spoke-3 { animation: execSpokeIn 0.4s ease-out 0.82s forwards; }
+  .exec-building .exec-spoke-4 { animation: execSpokeIn 0.4s ease-out 0.92s forwards; }
+  .exec-building .exec-spoke-5 { animation: execSpokeIn 0.4s ease-out 1.02s forwards; }
+  .exec-building .exec-spoke-6 { animation: execSpokeIn 0.4s ease-out 1.12s forwards; }
+  .exec-building .exec-spoke-7 { animation: execSpokeIn 0.4s ease-out 1.22s forwards; }
+
+  .exec-static .exec-hub { opacity: 1; transform: scale(1); animation: wbEdgeShimmer 7s linear infinite; }
+  .exec-static .exec-node { opacity: 1; transform: scale(1); }
+  .exec-static .exec-spoke { opacity: 1; stroke-dashoffset: 0; }
+
+  @keyframes execNodeIn  { from { opacity:0; transform:scale(0.65); } to { opacity:1; transform:scale(1); } }
+  @keyframes execSpokeIn { from { stroke-dashoffset:200; opacity:0; } to { stroke-dashoffset:0; opacity:1; } }
+  @keyframes execBreathe { 0%,100% { opacity:1; } 50% { opacity:0.88; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .exec-anim .exec-hub, .exec-anim .exec-node { opacity:1; transform:scale(1); }
+    .exec-anim .exec-spoke { opacity:1; stroke-dashoffset:0; }
+  }
+
+  .type-hero {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: clamp(5rem, 18vw, 18rem);
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+
+  .type-section {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+
+  .type-body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  .type-caption {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .gold-link {
+    position: relative;
+    display: inline-block;
+    color: var(--gold);
+    padding-bottom: 4px;
+    text-decoration: none;
+  }
+  .gold-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--gold);
+    transform: scaleX(1);
+    transform-origin: left center;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .gold-link:hover::after {
+    transform: scaleX(0);
+    transform-origin: right center;
+    animation: gold-link-sweep 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes gold-link-sweep {
+    0%   { transform: scaleX(1); transform-origin: right center; }
+    50%  { transform: scaleX(0); transform-origin: right center; }
+    51%  { transform: scaleX(0); transform-origin: left center; }
+    100% { transform: scaleX(1); transform-origin: left center; }
+  }
+
+  .nav-link {
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 4px;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ── RadialSystem ──────────────────────────────────────────────────────────── */
+
+.radial-system svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Default: all parts invisible */
+.radial-system .rs-glow       { opacity: 0; }
+.radial-system .rs-ring       { opacity: 0; }
+.radial-system .rs-spoke      { opacity: 0; stroke-dashoffset: 210; }
+.radial-system .rs-node-ring  {
+  opacity: 0;
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.radial-system .rs-node-dot   { opacity: 0; }
+.radial-system .rs-label      { opacity: 0; }
+.radial-system .rs-core       { opacity: 0; }
+
+/* Build: fired when .is-building is added by React on scroll entry */
+.radial-system.is-building .rs-glow   { animation: rsGlowIn   1.2s ease-out 0.1s  forwards; }
+
+.radial-system.is-building .rs-ring-0 { animation: rsRingIn   0.45s ease-out 0s    forwards; }
+.radial-system.is-building .rs-ring-1 { animation: rsRingIn   0.45s ease-out 0.15s forwards; }
+.radial-system.is-building .rs-ring-2 { animation: rsRingIn   0.45s ease-out 0.3s  forwards; }
+
+.radial-system.is-building .rs-spoke-0 { animation: rsSpokeDraw 0.4s ease-out 0.50s forwards; }
+.radial-system.is-building .rs-spoke-1 { animation: rsSpokeDraw 0.4s ease-out 0.62s forwards; }
+.radial-system.is-building .rs-spoke-2 { animation: rsSpokeDraw 0.4s ease-out 0.74s forwards; }
+.radial-system.is-building .rs-spoke-3 { animation: rsSpokeDraw 0.4s ease-out 0.86s forwards; }
+.radial-system.is-building .rs-spoke-4 { animation: rsSpokeDraw 0.4s ease-out 0.98s forwards; }
+.radial-system.is-building .rs-spoke-5 { animation: rsSpokeDraw 0.4s ease-out 1.10s forwards; }
+.radial-system.is-building .rs-spoke-6 { animation: rsSpokeDraw 0.4s ease-out 1.22s forwards; }
+.radial-system.is-building .rs-spoke-7 { animation: rsSpokeDraw 0.4s ease-out 1.34s forwards; }
+
+.radial-system.is-building .rs-node-ring-0 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.80s forwards; }
+.radial-system.is-building .rs-node-ring-1 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.92s forwards; }
+.radial-system.is-building .rs-node-ring-2 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.04s forwards; }
+.radial-system.is-building .rs-node-ring-3 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.16s forwards; }
+.radial-system.is-building .rs-node-ring-4 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.28s forwards; }
+.radial-system.is-building .rs-node-ring-5 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.40s forwards; }
+.radial-system.is-building .rs-node-ring-6 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.52s forwards; }
+.radial-system.is-building .rs-node-ring-7 { animation: rsNodePop 0.45s cubic-bezier(0.34,1.56,0.64,1) 1.64s forwards; }
+
+.radial-system.is-building .rs-node-dot-0 { animation: rsFadeIn 0.3s ease-out 0.90s forwards; }
+.radial-system.is-building .rs-node-dot-1 { animation: rsFadeIn 0.3s ease-out 1.02s forwards; }
+.radial-system.is-building .rs-node-dot-2 { animation: rsFadeIn 0.3s ease-out 1.14s forwards; }
+.radial-system.is-building .rs-node-dot-3 { animation: rsFadeIn 0.3s ease-out 1.26s forwards; }
+.radial-system.is-building .rs-node-dot-4 { animation: rsFadeIn 0.3s ease-out 1.38s forwards; }
+.radial-system.is-building .rs-node-dot-5 { animation: rsFadeIn 0.3s ease-out 1.50s forwards; }
+.radial-system.is-building .rs-node-dot-6 { animation: rsFadeIn 0.3s ease-out 1.62s forwards; }
+.radial-system.is-building .rs-node-dot-7 { animation: rsFadeIn 0.3s ease-out 1.74s forwards; }
+
+.radial-system.is-building .rs-label-0 { animation: rsLabelIn 0.5s ease-out 1.00s forwards; }
+.radial-system.is-building .rs-label-1 { animation: rsLabelIn 0.5s ease-out 1.12s forwards; }
+.radial-system.is-building .rs-label-2 { animation: rsLabelIn 0.5s ease-out 1.24s forwards; }
+.radial-system.is-building .rs-label-3 { animation: rsLabelIn 0.5s ease-out 1.36s forwards; }
+.radial-system.is-building .rs-label-4 { animation: rsLabelIn 0.5s ease-out 1.48s forwards; }
+.radial-system.is-building .rs-label-5 { animation: rsLabelIn 0.5s ease-out 1.60s forwards; }
+.radial-system.is-building .rs-label-6 { animation: rsLabelIn 0.5s ease-out 1.72s forwards; }
+.radial-system.is-building .rs-label-7 { animation: rsLabelIn 0.5s ease-out 1.84s forwards; }
+
+.radial-system.is-building .rs-core {
+  animation:
+    rsCoreIn      0.6s ease-out    2.0s forwards,
+    rsCoreBreathe 5s  ease-in-out  3.4s infinite;
+}
+
+@keyframes rsGlowIn    { to { opacity: 1; } }
+@keyframes rsRingIn    { to { opacity: 0.14; } }
+@keyframes rsSpokeDraw { to { opacity: 0.3; stroke-dashoffset: 0; } }
+@keyframes rsNodePop   { to { opacity: 1; transform: scale(1); } }
+@keyframes rsFadeIn    { to { opacity: 1; } }
+@keyframes rsLabelIn   { to { opacity: 0.72; } }
+@keyframes rsCoreIn    { to { opacity: 1; } }
+@keyframes rsCoreBreathe {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.88; }
+}
+
+/* Reduced motion: fully assembled, no animation */
+.radial-system.is-static .rs-glow      { opacity: 1; }
+.radial-system.is-static .rs-ring      { opacity: 0.14; }
+.radial-system.is-static .rs-spoke     { opacity: 0.3; stroke-dashoffset: 0; }
+.radial-system.is-static .rs-node-ring {
+  opacity: 1;
+  transform: scale(1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.radial-system.is-static .rs-node-dot  { opacity: 1; }
+.radial-system.is-static .rs-label     { opacity: 0.72; }
+.radial-system.is-static .rs-core      { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .radial-system .rs-glow      { opacity: 1; }
+  .radial-system .rs-ring      { opacity: 0.14; }
+  .radial-system .rs-spoke     { opacity: 0.3; stroke-dashoffset: 0; }
+  .radial-system .rs-node-ring {
+    opacity: 1;
+    transform: scale(1);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .radial-system .rs-node-dot  { opacity: 1; }
+  .radial-system .rs-label     { opacity: 0.72; }
+  .radial-system .rs-core      { opacity: 1; }
+}
+
+/* ── What We Build — editorial wordmark ───────────────────────────────────── */
+
+/* Default: hidden until .ww-building fires */
+.ww-anim .ww-spine {
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.ww-anim .ww-word {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* Build sequence */
+.ww-building .ww-spine  { animation: wwSpineDraw 0.9s cubic-bezier(0.22,1,0.36,1) 0s    forwards; }
+.ww-building .ww-word-0 { animation: wwWordRise  0.7s cubic-bezier(0.22,1,0.36,1) 0.30s forwards; }
+.ww-building .ww-word-1 { animation: wwWordRise  0.7s cubic-bezier(0.22,1,0.36,1) 0.42s forwards; }
+.ww-building .ww-word-2 { animation: wwWordRise  0.7s cubic-bezier(0.22,1,0.36,1) 0.54s forwards; }
+.ww-building .ww-word-3 { animation: wwWordRise  0.7s cubic-bezier(0.22,1,0.36,1) 0.66s forwards; }
+
+/* PER: rise + slow shimmer (must come after .ww-word-1 — source-order wins tie) */
+.ww-building .ww-per {
+  animation:
+    wwWordRise   0.7s cubic-bezier(0.22,1,0.36,1) 0.42s forwards,
+    wwPerShimmer 8s  ease-in-out                  1.6s  infinite;
+}
+
+@keyframes wwSpineDraw  { to { transform: scaleY(1); } }
+@keyframes wwWordRise   { to { opacity: 1; transform: translateY(0); } }
+@keyframes wwPerShimmer {
+  0%, 25%   { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+  75%, 100% { background-position: 0% 50%; }
+}
+
+/* Reduced motion: fully assembled, no animation */
+.ww-static .ww-spine { transform: scaleY(1); }
+.ww-static .ww-word  { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ww-anim .ww-spine { transform: scaleY(1); }
+  .ww-anim .ww-word  { opacity: 1; transform: translateY(0); }
+}
+
+/* ── What We Build — circle row ───────────────────────────────────────────── */
+
+/* Gold edge circles: continuous metallic shimmer */
+.wb-edge-shimmer {
+  background: linear-gradient(
+    110deg,
+    #6B4F18 0%, #B8902E 22%, #E8C36A 42%,
+    #FBE9AE 50%, #E8C36A 58%, #B8902E 78%, #6B4F18 100%
+  );
+  background-size: 200% 100%;
+  animation: wbEdgeShimmer 7s linear infinite;
+}
+@keyframes wbEdgeShimmer {
+  from { background-position: 0% 50%; }
+  to   { background-position: 200% 50%; }
+}
+
+/* Content circles: hidden by default, animate in on scroll */
+.wb-anim .wb-content-circle {
+  opacity: 0;
+  transform: scale(0.85);
+}
+.wb-building .wb-circle-center     { animation: wbCircleIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.10s forwards; }
+.wb-building .wb-circle-side-left  { animation: wbCircleIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.26s forwards; }
+.wb-building .wb-circle-side-right { animation: wbCircleIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.26s forwards; }
+
+@keyframes wbCircleIn { to { opacity: 1; transform: scale(1); } }
+
+/* Reduced motion: fully assembled, shimmer paused */
+.wb-static .wb-content-circle { opacity: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .wb-anim .wb-content-circle { opacity: 1; transform: scale(1); }
+  .wb-edge-shimmer { animation: none; }
+}
+
+/* ── TheMathSection — ledger spine ───────────────────────────── */
+.math-anim .math-spine { transform: scaleY(0); transform-origin: top center; }
+.math-anim .math-row   { opacity: 0; transform: translateY(14px); }
+.math-anim.math-desktop .math-node { transform: scale(0); transform-origin: center; }
+
+.math-building .math-spine  { animation: mathSpineGrow 1s   cubic-bezier(0.22,1,0.36,1) 0s    forwards; }
+.math-building .math-row-0  { animation: mathRowIn    0.6s  cubic-bezier(0.22,1,0.36,1) 0.30s forwards; }
+.math-building .math-row-1  { animation: mathRowIn    0.6s  cubic-bezier(0.22,1,0.36,1) 0.42s forwards; }
+.math-building .math-row-2  { animation: mathRowIn    0.6s  cubic-bezier(0.22,1,0.36,1) 0.54s forwards; }
+.math-building .math-row-3  { animation: mathRowIn    0.6s  cubic-bezier(0.22,1,0.36,1) 0.66s forwards; }
+.math-building.math-desktop .math-node-0 {
+  animation:
+    mathNodePop     0.45s cubic-bezier(0.22,1,0.36,1) 0.38s forwards,
+    mathNodeShimmer 0.9s  ease-out                    0.83s forwards;
+}
+.math-building.math-desktop .math-node-1 {
+  animation:
+    mathNodePop     0.45s cubic-bezier(0.22,1,0.36,1) 0.50s forwards,
+    mathNodeShimmer 0.9s  ease-out                    0.95s forwards;
+}
+.math-building.math-desktop .math-node-2 {
+  animation:
+    mathNodePop     0.45s cubic-bezier(0.22,1,0.36,1) 0.62s forwards,
+    mathNodeShimmer 0.9s  ease-out                    1.07s forwards;
+}
+.math-building.math-desktop .math-node-3 {
+  animation:
+    mathNodePop     0.45s cubic-bezier(0.22,1,0.36,1) 0.74s forwards,
+    mathNodeShimmer 0.9s  ease-out                    1.19s forwards;
+}
+
+@keyframes mathSpineGrow { to { transform: scaleY(1); } }
+@keyframes mathRowIn     { to { opacity: 1; transform: translateY(0); } }
+@keyframes mathNodePop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+@keyframes mathNodeShimmer {
+  0%   { box-shadow: 0 0 0px 0px rgba(232,195,106,0);   border-color: #B8902E; }
+  45%  {
+    box-shadow: 0 0 10px 5px rgba(232,195,106,0.75), 0 0 22px 10px rgba(184,144,46,0.35);
+    border-color: #E8C36A;
+  }
+  100% { box-shadow: 0 0 6px 2px rgba(184,144,46,0.28);  border-color: #B8902E; }
+}
+
+.math-static .math-spine,
+.math-static .math-row { opacity: 1; transform: none; }
+.math-static.math-desktop .math-node { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .math-anim .math-spine,
+  .math-anim .math-row { opacity: 1; transform: none; }
+  .math-anim.math-desktop .math-node { transform: none; }
+}
