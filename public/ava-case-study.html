@@ -131,6 +131,22 @@
     .leak-figure,.leak-figure-label{text-align:left;}
     .data-row{flex-direction:column;gap:6px;}
     .score-overall{flex-direction:column;gap:16px;text-align:center;}
+    /* Hero: move divider to left edge (at desktop left:64px matches padding; at mobile padding is 32px so it cuts through content) */
+    .cover::after{left:12px;}
+    /* Hero: remove extra inner indent, scale headline down to fit 283px column */
+    .cover-top,.cover-body,.cover-foot{padding-left:0;}
+    .cover-headline{font-size:38px;letter-spacing:-1.5px;}
+    /* Wound: reduce horizontal padding so stat text isn't in a 215px box */
+    .wound{padding:28px 20px;}
+    /* Priority list: let content take full width so body text isn't squeezed to ~128px */
+    .prio-item{flex-wrap:wrap;gap:8px 16px;}
+    .prio-content{flex:1 1 100%;}
+    .prio-value{flex:0 0 auto;}
+    /* CTA offer box: switch from inline-flex to full-width so long label wraps */
+    .cta-offer{display:flex;width:100%;}
+    /* Footer: reduce padding, stack to column */
+    .doc-footer{padding:32px;flex-direction:column;gap:20px;}
+    .footer-meta{text-align:left;}
   }
   @media print { body{background:#fff;} .section,.cover,.cta,.doc-footer{page-break-inside:avoid;} }
 </style>
@@ -164,7 +180,7 @@
     <span class="section-num">Case Study / Read This First</span>
     <div class="wound" style="margin-bottom:0;">
       <span class="wound-label">What You're Looking At</span>
-      <p class="wound-caption" style="margin-top:0;font-size:15px;"><strong>This is a real audit, not a sample.</strong> The brand is a $500K resort-wear label whose identity has been withheld. Every number is pulled from their live store across full-year 2025 — abandonment, conversion, discount margin, data quality, retention. We show it as a case study so you can see exactly what an Ava Store Intelligence Audit surfaces, and the kind of money most brands lose quietly. <strong>Your store's version of this report is what the Done-For-You Store Fix delivers.</strong></p>
+      <p class="wound-caption" style="margin-top:0;font-size:15px;"><strong>This is a real audit, not a sample.</strong> The brand is a $500K resort-wear label whose identity has been withheld. Every number is pulled from their live store across full-year 2025: abandonment, conversion, discount margin, data quality, retention. We show it as a case study so you can see exactly what an Ava Store Intelligence Audit surfaces, and the kind of money most brands lose quietly. <strong>Your store's version of this report is what the Done-For-You Store Fix delivers.</strong></p>
     </div>
   </div>
 
@@ -172,11 +188,11 @@
   <div class="section">
     <span class="section-num">01 / The Number That Matters</span>
     <h2 class="section-title">Start <em>here.</em></h2>
-    <p class="section-intro">Before the full breakdown — the single finding that pays for fixing everything else. This is what was leaving the account every year while the store looked like it was working.</p>
+    <p class="section-intro">Before the full breakdown: the single finding that pays for fixing everything else. This is what was leaving the account every year while the store looked like it was working.</p>
     <div class="wound">
       <span class="wound-label">Estimated Revenue Lost · Abandoned Checkouts · 2025</span>
       <div class="wound-stat"><em>~$1.05M</em> / year</div>
-      <p class="wound-caption"><strong>67.6% of checkout sessions were abandoned</strong> — 2,334 of 3,453 sessions that reached checkout never completed. At their 2025 average order value of ~$451, that's roughly a million dollars in revenue that reached the doorstep and walked away. A correctly sequenced recovery flow typically recaptures 5-15% of abandoned checkouts. Even a conservative recovery rate turns this into <strong>six figures recaptured annually</strong> — which is why it's the first thing Ava fixes.</p>
+      <p class="wound-caption"><strong>67.6% of checkout sessions were abandoned.</strong> 2,334 of 3,453 sessions that reached checkout never completed. At their 2025 average order value of ~$451, that's roughly a million dollars in revenue that reached the doorstep and walked away. A correctly sequenced recovery flow typically recaptures 5-15% of abandoned checkouts. Even a conservative recovery rate turns this into <strong>six figures recaptured annually,</strong> which is why it's the first thing Ava fixes.</p>
     </div>
   </div>
 
@@ -184,13 +200,13 @@
   <div class="section">
     <span class="section-num">02 / The Leak Ledger</span>
     <h2 class="section-title">Every leak, <em>ranked.</em></h2>
-    <p class="section-intro">Not all leaks are revenue — some are margin, some are wasted spend, some are trust. Ava reads all of them and ranks by recoverable dollars. Here's the full 2025 picture, in order of what's costing the most.</p>
+    <p class="section-intro">Not all leaks are revenue. Some are margin, some are wasted spend, some are trust. Ava reads all of them and ranks by recoverable dollars. Here's the full 2025 picture, in order of what's costing the most.</p>
     <div class="ledger">
       <div class="leak">
         <div class="leak-rank">01</div>
         <div class="leak-content">
           <div class="leak-title">Abandoned checkouts</div>
-          <div class="leak-desc"><strong>67.6% abandonment</strong> — 2,334 of 3,453 checkout sessions lost. The single biggest recoverable lever in the business, and the fastest to fix with a sequenced recovery flow.</div>
+          <div class="leak-desc"><strong>67.6% abandonment.</strong> 2,334 of 3,453 checkout sessions lost. The single biggest recoverable lever in the business, and the fastest to fix with a sequenced recovery flow.</div>
         </div>
         <div><div class="leak-figure crit">~$1.05M</div><div class="leak-figure-label">Revenue / yr</div></div>
       </div>
@@ -198,7 +214,7 @@
         <div class="leak-rank">02</div>
         <div class="leak-content">
           <div class="leak-title">Top-of-funnel collapse</div>
-          <div class="leak-desc"><strong>97% of visitors never add to cart.</strong> Only 2.7% of sessions reached add-to-cart and just 0.37% converted overall — roughly 1 in 270 visitors. The biggest drop is at the very top: session to engagement.</div>
+          <div class="leak-desc"><strong>97% of visitors never add to cart.</strong> Only 2.7% of sessions reached add-to-cart and just 0.37% converted overall, roughly 1 in 270 visitors. The biggest drop is at the very top: session to engagement.</div>
         </div>
         <div><div class="leak-figure crit">0.37%</div><div class="leak-figure-label">Conversion rate</div></div>
       </div>
@@ -206,7 +222,7 @@
         <div class="leak-rank">03</div>
         <div class="leak-content">
           <div class="leak-title">Discount margin erosion</div>
-          <div class="leak-desc">Discounts reduced gross sales by <strong>11.1% ($63,148)</strong> across 2025. Not all bad — but a chunk is almost certainly subsidizing customers who'd have bought anyway. Worth auditing for incrementality.</div>
+          <div class="leak-desc">Discounts reduced gross sales by <strong>11.1% ($63,148)</strong> across 2025. Not all bad, but a chunk is almost certainly subsidizing customers who'd have bought anyway. Worth auditing for incrementality.</div>
         </div>
         <div><div class="leak-figure warn">$63K</div><div class="leak-figure-label">Margin / yr</div></div>
       </div>
@@ -214,7 +230,7 @@
         <div class="leak-rank">04</div>
         <div class="leak-content">
           <div class="leak-title">Paid traffic attribution</div>
-          <div class="leak-desc"><strong>74 paid sessions, 0 conversions</strong> — but this is an attribution problem, not necessarily wasted spend. Paid social is likely mis-bucketed into Social (105K sessions). The real leak is <strong>not knowing what's working</strong> because UTM tagging is inconsistent.</div>
+          <div class="leak-desc"><strong>74 paid sessions, 0 conversions</strong>, but this is an attribution problem, not necessarily wasted spend. Paid social is likely mis-bucketed into Social (105K sessions). The real leak is <strong>not knowing what's working</strong> because UTM tagging is inconsistent.</div>
         </div>
         <div><div class="leak-figure warn">Untracked</div><div class="leak-figure-label">Attribution</div></div>
       </div>
@@ -222,14 +238,14 @@
         <div class="leak-rank">05</div>
         <div class="leak-content">
           <div class="leak-title">Product returns</div>
-          <div class="leak-desc">Only <strong>$2,954 across 11 units</strong> in 2025 — genuinely minor. ANA SKIRT and NISA MAXI DRESS led by dollar value. Flagged and checked: this is clean, not a leak. We report it so you know it was looked at.</div>
+          <div class="leak-desc">Only <strong>$2,954 across 11 units</strong> in 2025, genuinely minor. ANA SKIRT and NISA MAXI DRESS led by dollar value. Flagged and checked: this is clean, not a leak. We report it so you know it was looked at.</div>
         </div>
         <div><div class="leak-figure ok">$2,954</div><div class="leak-figure-label">Returns / yr</div></div>
       </div>
     </div>
     <div class="ava-note" style="margin-left:0;margin-right:0;margin-top:24px;">
       <div class="ava-note-label">What Ava reads across the ledger</div>
-      <div class="ava-note-text">Two leaks dominate and they <strong>compound</strong>: a funnel that converts at 0.37% means most traffic never reaches checkout — and then two-thirds of the few who do, leave. Fixing checkout recovery recaptures money already at the door; fixing the funnel widens the door. <strong>The honest read is that returns are fine and paid is a measurement problem — naming what isn't broken is what makes the rest credible.</strong></div>
+      <div class="ava-note-text">Two leaks dominate and they <strong>compound</strong>: a funnel that converts at 0.37% means most traffic never reaches checkout, and then two-thirds of the few who do, leave. Fixing checkout recovery recaptures money already at the door; fixing the funnel widens the door. <strong>The honest read: returns are fine and paid is a measurement problem. Naming what isn't broken is what makes the rest credible.</strong></div>
     </div>
   </div>
 
@@ -237,7 +253,7 @@
   <div class="section">
     <span class="section-num">03 / Foundation</span>
     <h2 class="section-title">The data <em>underneath.</em></h2>
-    <p class="section-intro">The leaks above sit on top of a data foundation that decides whether any fix — or any AI tool — can actually work. Here's what was broken beneath the surface.</p>
+    <p class="section-intro">The leaks above sit on top of a data foundation that decides whether any fix, or any AI tool, can actually work. Here's what was broken beneath the surface.</p>
 
     <div class="data-block">
       <div class="data-block-head"><div class="data-block-title">Product SEO &amp; AI Visibility</div><div class="data-block-flag flag-crit">Critical</div></div>
@@ -246,7 +262,7 @@
       <div class="data-row"><div class="data-row-label">Collections (target: ~40-50 clean, customer-facing)</div><div class="data-row-value mid">121</div></div>
       <div class="ava-note">
         <div class="ava-note-label">What Ava reads here</div>
-        <div class="ava-note-text">The catalog is effectively <strong>invisible to ChatGPT, Perplexity, and Google AI Overviews</strong> — there's nothing for them to read. This is the fastest-growing discovery channel in fashion and the store has zero presence in it. It's also why the funnel leaks: products that can't be found or understood don't get added to carts.</div>
+        <div class="ava-note-text">The catalog is effectively <strong>invisible to ChatGPT, Perplexity, and Google AI Overviews.</strong> There's nothing for them to read. This is the fastest-growing discovery channel in fashion and the store has zero presence in it. It's also why the funnel leaks: products that can't be found or understood don't get added to carts.</div>
       </div>
     </div>
 
@@ -258,7 +274,7 @@
       <div class="data-row"><div class="data-row-label">Returning customer rate (room to reach 40%+)</div><div class="data-row-value mid">29.6%</div></div>
       <div class="ava-note">
         <div class="ava-note-label">What Ava reads here</div>
-        <div class="ava-note-text">Their single post-purchase email is the <strong>best performer in the entire account</strong> — and they only send one. Three of four standard follow-ups don't exist. With repeat customers worth ~2.6x a single order, the retention flows are pure upside sitting untouched. This is proof, not theory.</div>
+        <div class="ava-note-text">Their single post-purchase email is the <strong>best performer in the entire account.</strong> And they only send one. Three of four standard follow-ups don't exist. With repeat customers worth ~2.6x a single order, the retention flows are pure upside sitting untouched. This is proof, not theory.</div>
       </div>
     </div>
   </div>
@@ -267,7 +283,7 @@
   <div class="section">
     <span class="section-num">04 / The Scorecard</span>
     <h2 class="section-title">Store health, <em>by category.</em></h2>
-    <p class="section-intro">Ava doesn't score one thing — it scores everything that moves revenue. Ten dimensions, each rated 1-10 against fashion-brand benchmarks. This is the same scorecard every client receives, and the baseline every fix is measured against.</p>
+    <p class="section-intro">Ava doesn't score one thing. It scores everything that moves revenue. Ten dimensions, each rated 1-10 against fashion-brand benchmarks. This is the same scorecard every client receives, and the baseline every fix is measured against.</p>
 
     <div class="scorestrip">
       <div class="scorecell"><div class="scorecell-num s-crit">2<span class="d">/10</span></div><div class="scorecell-label">Checkout &amp; Cart Recovery</div></div>
@@ -296,10 +312,10 @@
   <div class="section">
     <span class="section-num">05 / The Plan</span>
     <h2 class="section-title">Fix order, <em>by impact.</em></h2>
-    <p class="section-intro">Not a to-do list. A sequence ranked by recoverable dollars and dependency — what to fix first because it returns money fastest, then what unlocks everything downstream.</p>
+    <p class="section-intro">Not a to-do list. A sequence ranked by recoverable dollars and dependency. What to fix first because it returns money fastest, then what unlocks everything downstream.</p>
     <div class="prio-list">
-      <div class="prio-item"><div class="prio-rank">01</div><div class="prio-content"><div class="prio-tier s-crit">Immediate · Highest Dollar</div><div class="prio-title">Sequence checkout &amp; cart recovery</div><div class="prio-desc">Build a clean 3-step abandoned-checkout flow. This is the ~$1.05M leak — the highest-dollar fix and the fastest to deploy. Six figures recoverable in year one.</div></div><div class="prio-value">~$100K+/yr</div></div>
-      <div class="prio-item"><div class="prio-rank">02</div><div class="prio-content"><div class="prio-tier s-crit">Immediate · Diagnostic</div><div class="prio-title">Investigate the funnel collapse</div><div class="prio-desc">0.37% conversion with collection/product checkout sessions down sharply suggests something broke — a theme or navigation change worth checking immediately before optimizing anything else.</div></div><div class="prio-value">Widens the door</div></div>
+      <div class="prio-item"><div class="prio-rank">01</div><div class="prio-content"><div class="prio-tier s-crit">Immediate · Highest Dollar</div><div class="prio-title">Sequence checkout &amp; cart recovery</div><div class="prio-desc">Build a clean 3-step abandoned-checkout flow. This is the ~$1.05M leak, the highest-dollar fix and the fastest to deploy. Six figures recoverable in year one.</div></div><div class="prio-value">~$100K+/yr</div></div>
+      <div class="prio-item"><div class="prio-rank">02</div><div class="prio-content"><div class="prio-tier s-crit">Immediate · Diagnostic</div><div class="prio-title">Investigate the funnel collapse</div><div class="prio-desc">0.37% conversion with collection/product checkout sessions down sharply suggests something broke: a theme or navigation change worth checking immediately before optimizing anything else.</div></div><div class="prio-value">Widens the door</div></div>
       <div class="prio-item"><div class="prio-rank">03</div><div class="prio-content"><div class="prio-tier s-warn">This Month · Foundation</div><div class="prio-title">Write metadata + clean the catalog</div><div class="prio-desc">Bulk-generate SEO metadata across 1,457 products, fix tags/collections. Unlocks AI discovery and makes the intelligence layer reliable.</div></div><div class="prio-value">Unlocks GEO</div></div>
       <div class="prio-item"><div class="prio-rank">04</div><div class="prio-content"><div class="prio-tier s-warn">This Month · High Certainty</div><div class="prio-title">Build the post-purchase sequence</div><div class="prio-desc">Add cross-sell, review, care, replenishment flows. Already proven at 72.7% open. Highest-certainty recurring revenue, repeat LTV is 2.6x.</div></div><div class="prio-value">2.6x LTV</div></div>
       <div class="prio-item"><div class="prio-rank">05</div><div class="prio-content"><div class="prio-tier s-ok">Next Quarter · Margin &amp; Spend</div><div class="prio-title">Fix attribution &amp; audit discounts</div><div class="prio-desc">Standardize UTM tagging so paid is measurable, then audit the $63K in discounts for incrementality. Stop subsidizing buyers who'd convert anyway.</div></div><div class="prio-value">Protects margin</div></div>
@@ -310,8 +326,8 @@
   <div class="cta">
     <div class="cta-glow"></div>
     <div class="cta-kicker">What Happens Next</div>
-    <h2 class="cta-headline">This audit found the leaks.<br><em>Ava fixes them — then watches.</em></h2>
-    <p class="cta-body">The Done-For-You Store Fix cleans the foundation and fixes the highest-dollar leaks — the ones you just saw ranked. After that, Ava stays on: watching the store, preparing the next move each week, waiting for one tap to execute. The audit you're holding is what she sees on day one.</p>
+    <h2 class="cta-headline">This audit found the leaks.<br><em>Ava fixes them, then watches.</em></h2>
+    <p class="cta-body">The Done-For-You Store Fix cleans the foundation and fixes the highest-dollar leaks, the ones you just saw ranked. After that, Ava stays on: watching the store, preparing the next move each week, waiting for one tap to execute. The audit you're holding is what she sees on day one.</p>
     <div class="cta-offer">
       <div class="cta-offer-price">$1,500</div>
       <div class="cta-offer-label">Done-For-You Store Fix · we run the audit &amp; fix the leaks · from $1,500</div>
