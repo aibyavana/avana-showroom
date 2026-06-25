@@ -174,8 +174,6 @@ function AiByAvana() {
       <FilmGrain />
       <CustomCursor />
       <TopNav
-        showAtEnds
-        topThresholdPx={typeof window !== "undefined" ? Math.round(window.innerHeight * 1.15) : 900}
         background="rgba(10,10,10,0.88)"
         dark
       />
@@ -347,7 +345,7 @@ function DnaColdOpen() {
         }
       }
     `}</style>
-    <div ref={containerRef} style={{ height: "200vh" }}>
+    <div ref={containerRef} className="h-[150vh] md:h-[200vh]">
       <div
         style={{
           position: "sticky",
@@ -1325,7 +1323,6 @@ function TheMathSection() {
           lineHeight: 1.55,
           color: CREAM,
           maxWidth: "none",
-          whiteSpace: "nowrap",
           margin: "3.5rem 0 0",
         }}
         {...up(0.1)}

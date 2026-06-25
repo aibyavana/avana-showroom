@@ -195,7 +195,7 @@ function HeroSection({ onApply }: { onApply: (e: React.MouseEvent) => void }) {
               style={{
                 fontFamily: ARCHIVO,
                 fontWeight: 800,
-                fontSize: "clamp(1.25rem, 2.2vw, 2.2rem)",
+                fontSize: "clamp(1.6rem, 2.2vw, 2.2rem)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1.05,
                 color: "#F7F4EF",
@@ -297,7 +297,6 @@ function PartnershipSection() {
               letterSpacing: "-0.02em",
               lineHeight: 1.05,
               color: FOREGROUND,
-              whiteSpace: "nowrap",
               margin: 0,
             }}
           >
@@ -501,7 +500,6 @@ const FormSection = React.forwardRef<HTMLElement>((_, ref) => {
               letterSpacing: "-0.02em",
               lineHeight: 1.05,
               color: FOREGROUND,
-              whiteSpace: "nowrap",
               margin: "0 0 3rem",
             }}
           >

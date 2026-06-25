@@ -29,7 +29,7 @@ const MASK_PROPS = (src: string) => ({
 
 export function PreviousClients() {
   return (
-    <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
+    <section className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
       <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12 md:py-24 lg:px-20">
         <motion.p
           initial={{ opacity: 0, y: 16 }}

@@ -137,7 +137,7 @@ export function BrandsGallery() {
   // travel=0 → section height collapsed to a white gap. Now the rail is always visible
   // and measured correctly at any viewport width.
   return (
-    <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
+    <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF", scrollMarginTop: 72 }}>
       <div ref={ref} className="relative" style={{ height: sectionHeight }}>
         <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
           {/* Header — responsive padding */}
