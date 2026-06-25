@@ -147,6 +147,9 @@
     /* Footer: reduce padding, stack to column */
     .doc-footer{padding:32px;flex-direction:column;gap:20px;}
     .footer-meta{text-align:left;}
+    /* Scorecard: push Returns (child 5) and Customer Segmentation (child 10) to last row so they pair together */
+    .scorestrip>.scorecell:nth-child(5){order:9;}
+    .scorestrip>.scorecell:nth-child(10){order:10;}
   }
   @media print { body{background:#fff;} .section,.cover,.cta,.doc-footer{page-break-inside:avoid;} }
 </style>
@@ -291,8 +294,6 @@
       <div class="scorecell"><div class="scorecell-num s-warn">5<span class="d">/10</span></div><div class="scorecell-label">Discount Margin</div></div>
       <div class="scorecell"><div class="scorecell-num s-warn">3<span class="d">/10</span></div><div class="scorecell-label">Paid Traffic &amp; Attribution</div></div>
       <div class="scorecell"><div class="scorecell-num s-ok">8<span class="d">/10</span></div><div class="scorecell-label">Returns</div></div>
-    </div>
-    <div class="scorestrip">
       <div class="scorecell"><div class="scorecell-num s-crit">1<span class="d">/10</span></div><div class="scorecell-label">Product Data &amp; SEO</div></div>
       <div class="scorecell"><div class="scorecell-num s-crit">2<span class="d">/10</span></div><div class="scorecell-label">AI / GEO Visibility</div></div>
       <div class="scorecell"><div class="scorecell-num s-warn">4<span class="d">/10</span></div><div class="scorecell-label">Email &amp; Lifecycle</div></div>
