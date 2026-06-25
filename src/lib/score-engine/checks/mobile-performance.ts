@@ -12,7 +12,7 @@ async function fetchPageSpeed(url: string, apiKey: string): Promise<PageSpeedRes
   const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=${apiKey}`
   try {
     const controller = new AbortController()
-    setTimeout(() => controller.abort(), 20_000)
+    setTimeout(() => controller.abort(), 55_000)
     const res = await fetch(endpoint, { signal: controller.signal })
     if (!res.ok) return null
     const json = await res.json() as Record<string, unknown>

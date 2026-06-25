@@ -555,16 +555,20 @@ export function buildVisibilityEmail(firstName: string, result: ScoreResult): { 
 async function sendFallbackAlert(firstName: string, email: string, storeUrl: string, err: unknown): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) return
-  const { Resend } = await import('resend')
-  const resend = new Resend(apiKey)
-  await resend.emails.send({
-    from: 'Amanda at AVANA <amanda@mail.avanashowroom.com>',
-    to: 'amanda@avanashowroom.com',
-    replyTo: 'amanda@avanashowroom.com',
-    subject: `SCORE RUN FAILED — ${email} / ${storeUrl}`,
-    html: `<p style="font-family:Arial;font-size:16px">Score run failed for <strong>${firstName}</strong> (${email}), store: <strong>${storeUrl}</strong>.</p><p style="font-family:Arial;font-size:16px">Error: ${String(err)}</p><p style="font-family:Arial;font-size:16px">Run manually: <code>npx tsx src/lib/score-engine/run-test.ts ${storeUrl}</code> and send the report directly.</p>`,
-    text: `Score run failed for ${firstName} (${email}), store: ${storeUrl}.\n\nError: ${String(err)}\n\nRun manually: npx tsx src/lib/score-engine/run-test.ts ${storeUrl}`,
-  })
+  try {
+    const { Resend } = await import('resend')
+    const resend = new Resend(apiKey)
+    await resend.emails.send({
+      from: 'Amanda at AVANA <amanda@mail.avanashowroom.com>',
+      to: 'amanda@avanashowroom.com',
+      replyTo: 'amanda@avanashowroom.com',
+      subject: `SCORE RUN FAILED — ${email} / ${storeUrl}`,
+      html: `<p style="font-family:Arial;font-size:16px">Score run failed for <strong>${firstName}</strong> (${email}), store: <strong>${storeUrl}</strong>.</p><p style="font-family:Arial;font-size:16px">Error: ${String(err)}</p><p style="font-family:Arial;font-size:16px">Run manually: <code>npx tsx src/lib/score-engine/run-test.ts ${storeUrl}</code> and send the report directly.</p>`,
+      text: `Score run failed for ${firstName} (${email}), store: ${storeUrl}.\n\nError: ${String(err)}\n\nRun manually: npx tsx src/lib/score-engine/run-test.ts ${storeUrl}`,
+    })
+  } catch (alertErr) {
+    console.error('[score-runner] sendFallbackAlert threw (non-fatal):', alertErr)
+  }
 }
 
 // ── Score status helper ───────────────────────────────────────────────────────
@@ -650,16 +654,18 @@ export async function runScoreAndEmail(payload: ScoreRunPayload): Promise<void> 
       text,
     })
     if (error) {
+      const errDetail = `Resend: ${(error as { message?: string }).message ?? JSON.stringify(error)}`
       console.error('[score-runner] Resend failed sending to submitter:', error)
-      await updateScoreStatus(email, storeUrl, type, 'failed')
-      await sendFallbackAlert(firstName, email, storeUrl, `Resend error: ${JSON.stringify(error)}`)
+      await updateScoreStatus(email, storeUrl, type, 'failed', errDetail)
+      await sendFallbackAlert(firstName, email, storeUrl, errDetail)
     } else {
       console.log(`[score-runner] Report emailed to ${email}`)
       await updateScoreStatus(email, storeUrl, type, 'sent')
     }
   } catch (err) {
-    console.error('[score-runner] Unexpected send error:', err)
-    await updateScoreStatus(email, storeUrl, type, 'failed')
+    const errStr = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+    console.error('[score-runner] Unexpected send error:', errStr)
+    await updateScoreStatus(email, storeUrl, type, 'failed', errStr)
     await sendFallbackAlert(firstName, email, storeUrl, err)
   }
 }
