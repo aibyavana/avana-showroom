@@ -190,7 +190,7 @@ export function BrandsGallery() {
     <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF", scrollMarginTop: 72 }}>
 
       {/* ── MOBILE: native horizontal scroll, no sticky, no tall section ── */}
-      <div className="md:hidden pb-12">
+      <div className="md:hidden pb-4">
         {header}
         {/* Scrollable card row */}
         <div
@@ -202,10 +202,6 @@ export function BrandsGallery() {
               <BrandCard key={b.slug} brand={b} width={CARD_WIDTH_MOBILE} />
             ))}
           </div>
-        </div>
-        {/* Endcap logo below the card row */}
-        <div className="mt-10 flex justify-center">
-          <AvanaLogo style={{ width: "clamp(min(80vw, 320px), 60vw, 320px)" }} />
         </div>
       </div>
 

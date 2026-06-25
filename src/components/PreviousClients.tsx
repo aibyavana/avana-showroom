@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { EASE_SULTRY, DUR_SLOW, DUR_HOVER, DELAY_WITHHOLD } from "@/lib/motion";
 import { GOLD } from "@/lib/tokens";
+import { AvanaLogo } from "./AvanaLogo";
 
 // ── Tunables ─────────────────────────────────────────────────────────────
 const SILVER = "linear-gradient(135deg, #E8E8E8 0%, #A8A8A8 30%, #D4D4D4 65%, #909090 100%)";
@@ -31,6 +32,11 @@ export function PreviousClients() {
   return (
     <section className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
       <div className="mx-auto max-w-[1400px] px-6 pt-10 pb-4 md:px-12 md:py-24 lg:px-20">
+        {/* AVANA logo — mobile only, sits above the Previous Clients label */}
+        <div className="md:hidden flex justify-center mb-10">
+          <AvanaLogo style={{ width: "min(80vw, 300px)" }} />
+        </div>
+
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
