@@ -139,7 +139,7 @@ export function BrandsGallery() {
   return (
     <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF", scrollMarginTop: 72 }}>
       <div ref={ref} className="relative" style={{ height: sectionHeight }}>
-        <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
+        <div className="sticky top-0 flex h-[520px] md:h-screen w-full flex-col overflow-hidden">
           {/* Header — responsive padding */}
           <div className="px-6 pt-6 md:px-12 lg:px-20 md:pt-20">
             <div className="mb-3 flex items-center gap-4 overflow-hidden">
@@ -194,7 +194,7 @@ export function BrandsGallery() {
           </div>
 
           {/* Horizontal rail — cards slide left as user scrolls down */}
-          <div className="flex flex-1 items-start pt-3 overflow-hidden md:items-center md:pt-0">
+          <div className="flex flex-1 items-center overflow-hidden">
             <motion.div
               ref={railRef}
               className="flex items-center gap-[6vw] pl-[5vw] pr-[5vw] md:gap-[4vw] md:pl-[8vw] md:pr-[8vw]"
