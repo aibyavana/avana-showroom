@@ -574,6 +574,7 @@ async function updateScoreStatus(
   storeUrl: string,
   type: string,
   status: 'sent' | 'failed',
+  errorDetail?: string,
 ): Promise<void> {
   try {
     const { createClient } = await import('@supabase/supabase-js')
@@ -581,9 +582,12 @@ async function updateScoreStatus(
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY
     if (!url || !key) return
     const admin = createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } })
+    const scoreStatusValue = errorDetail
+      ? `${status}: ${errorDetail.slice(0, 200)}`
+      : status
     await admin
       .from('score_leads')
-      .update({ score_status: status })
+      .update({ score_status: scoreStatusValue })
       .eq('email', email.toLowerCase())
       .eq('store_url', storeUrl)
       .eq('type', type)
@@ -605,8 +609,9 @@ export async function runScoreAndEmail(payload: ScoreRunPayload): Promise<void> 
     result = await runScore(storeUrl)
     console.log(`[score-runner] Score complete: ${storeUrl} — health ${result.healthCheck.total}/100`)
   } catch (err) {
-    console.error('[score-runner] runScore failed:', err)
-    await updateScoreStatus(email, storeUrl, type, 'failed')
+    const errStr = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+    console.error('[score-runner] runScore failed:', errStr)
+    await updateScoreStatus(email, storeUrl, type, 'failed', errStr)
     try {
       await sendFallbackAlert(firstName, email, storeUrl, err)
     } catch (alertErr) {
