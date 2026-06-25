@@ -6,13 +6,14 @@ import { Brand, BRANDS } from "@/data/brands";
 
 // ── Card dimensions — tune here ──────────────────────────────────────────
 const CARD_WIDTH       = "clamp(260px, 30vw, 420px)";
+const CARD_WIDTH_MOBILE = "70vw"; // mobile native scroll: 1.2 cards visible at 375px
 const CARD_ASPECT      = "2/3"; // editorial portrait — width:height
 const CARD_TEXT_BOTTOM = "11%"; // distance from card bottom to text block — increase to push text up
 // ─────────────────────────────────────────────────────────────────────────
 
-function BrandCard({ brand }: { brand: Brand }) {
+function BrandCard({ brand, width }: { brand: Brand; width?: string }) {
   const sharedClass = "group relative block flex-shrink-0 overflow-hidden";
-  const sharedStyle = { width: CARD_WIDTH, aspectRatio: CARD_ASPECT, backgroundColor: "#E8E2D6" };
+  const sharedStyle = { width: width ?? CARD_WIDTH, aspectRatio: CARD_ASPECT, backgroundColor: "#E8E2D6" };
 
   const inner = (
     <>
@@ -131,86 +132,107 @@ export function BrandsGallery() {
   // Rail travel mapped across the pinned scroll distance.
   const x = useTransform(scrollYProgress, [RAIL_START, RAIL_END], [0, -maxTranslate]);
 
-  // Single unified layout — scroll-driven horizontal rail on all screen sizes.
-  // Previously split into hidden md:block (desktop rail) + md:hidden (mobile vertical stack).
-  // The mobile-only section caused railRef to have scrollWidth=0 (display:none) so
-  // travel=0 → section height collapsed to a white gap. Now the rail is always visible
-  // and measured correctly at any viewport width.
+  const header = (
+    <div className="px-6 pt-6 md:px-12 lg:px-20 md:pt-20">
+      <div className="mb-3 flex items-center gap-4 overflow-hidden">
+        <motion.p
+          initial={reduce ? false : { opacity: 0, x: -16 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            color: GOLD,
+            fontFamily: "Arial, Helvetica, sans-serif",
+            fontSize: "0.7rem",
+            letterSpacing: "0.32em",
+            textTransform: "uppercase",
+          }}
+        >
+          The Collective
+        </motion.p>
+        <motion.span
+          aria-hidden
+          initial={reduce ? false : { scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+          style={{
+            display: "inline-block",
+            width: "10vw",
+            height: "1px",
+            backgroundColor: GOLD,
+            transformOrigin: "left center",
+          }}
+        />
+      </div>
+      <div style={{ overflow: "hidden" }}>
+        <motion.h2
+          initial={reduce ? false : { y: "100%" }}
+          whileInView={{ y: "0%" }}
+          viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+          style={{
+            fontFamily: "Arial, Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "clamp(2rem, 6vw, 5rem)",
+            letterSpacing: "-0.02em",
+            lineHeight: 1,
+            color: WARM_GREY,
+          }}
+        >
+          AGENCY BRANDS
+        </motion.h2>
+      </div>
+    </div>
+  );
+
   return (
     <section id="brands" className="relative w-full" style={{ backgroundColor: "#F7F4EF", scrollMarginTop: 72 }}>
-      <div ref={ref} className="relative" style={{ height: sectionHeight }}>
-        <div className="sticky top-0 flex h-[520px] md:h-screen w-full flex-col overflow-hidden">
-          {/* Header — responsive padding */}
-          <div className="px-6 pt-6 md:px-12 lg:px-20 md:pt-20">
-            <div className="mb-3 flex items-center gap-4 overflow-hidden">
-              <motion.p
-                initial={reduce ? false : { opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  color: GOLD,
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.32em",
-                  textTransform: "uppercase",
-                }}
-              >
-                The Collective
-              </motion.p>
-              <motion.span
-                aria-hidden
-                initial={reduce ? false : { scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-                style={{
-                  display: "inline-block",
-                  width: "10vw",
-                  height: "1px",
-                  backgroundColor: GOLD,
-                  transformOrigin: "left center",
-                }}
-              />
-            </div>
-            <div style={{ overflow: "hidden" }}>
-              <motion.h2
-                initial={reduce ? false : { y: "100%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-                style={{
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(2rem, 6vw, 5rem)",
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1,
-                  color: WARM_GREY,
-                }}
-              >
-                AGENCY BRANDS
-              </motion.h2>
-            </div>
-          </div>
 
-          {/* Horizontal rail — cards slide left as user scrolls down */}
-          <div className="flex flex-1 items-center overflow-hidden">
-            <motion.div
-              ref={railRef}
-              className="flex items-center gap-[6vw] pl-[5vw] pr-[5vw] md:gap-[4vw] md:pl-[8vw] md:pr-[8vw]"
-              style={reduce ? undefined : { x }}
-            >
-              {BRANDS.map((b) => (
-                <BrandCard key={b.slug} brand={b} />
-              ))}
-              {/* Closing endcap: rail stops when logo's right edge hits viewport */}
-              <div className="flex flex-shrink-0 items-center">
-                <AvanaLogo style={{ width: "clamp(min(80vw, 380px), 42vw, 580px)" }} />
-              </div>
-            </motion.div>
+      {/* ── MOBILE: native horizontal scroll, no sticky, no tall section ── */}
+      <div className="md:hidden pb-12">
+        {header}
+        {/* Scrollable card row */}
+        <div
+          className="mt-6 overflow-x-auto"
+          style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+        >
+          <div className="flex gap-[5vw] pl-[5vw] pr-[5vw]" style={{ width: "max-content" }}>
+            {BRANDS.map((b) => (
+              <BrandCard key={b.slug} brand={b} width={CARD_WIDTH_MOBILE} />
+            ))}
+          </div>
+        </div>
+        {/* Endcap logo below the card row */}
+        <div className="mt-10 flex justify-center">
+          <AvanaLogo style={{ width: "clamp(min(80vw, 320px), 60vw, 320px)" }} />
+        </div>
+      </div>
+
+      {/* ── DESKTOP: scroll-driven sticky horizontal rail ── */}
+      {/* railRef must live here (not in mobile) so scrollWidth is measurable on desktop */}
+      <div className="hidden md:block">
+        <div ref={ref} className="relative" style={{ height: sectionHeight }}>
+          <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
+            {header}
+            <div className="flex flex-1 items-center overflow-hidden">
+              <motion.div
+                ref={railRef}
+                className="flex items-center gap-[4vw] pl-[8vw] pr-[8vw]"
+                style={reduce ? undefined : { x }}
+              >
+                {BRANDS.map((b) => (
+                  <BrandCard key={b.slug} brand={b} />
+                ))}
+                <div className="flex flex-shrink-0 items-center">
+                  <AvanaLogo style={{ width: "clamp(min(80vw, 380px), 42vw, 580px)" }} />
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 }
