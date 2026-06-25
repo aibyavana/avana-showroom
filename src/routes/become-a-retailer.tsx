@@ -907,7 +907,7 @@ function AiWaitlistSection() {
               margin: "0 0 1.25rem",
             }}
           >
-            I'm building something with AI for the retailers I work with.
+            I'm building AI tools that help my retailers buy smarter, what to stock, when to move, where the margin is.
           </h2>
         </Reveal>
 
@@ -922,9 +922,7 @@ function AiWaitlistSection() {
               margin: "0 0 2.5rem",
             }}
           >
-            <span className="block">Tools to help you buy smarter and move faster.</span>
-            <span className="block">It's early, and I'm opening it first to the retailers closest to me.</span>
-            <span className="block">Add your name if you want to be one of them.</span>
+            It's early, and the first spots are going to the retailers closest to me. Add your name to claim one.
           </p>
         </Reveal>
 

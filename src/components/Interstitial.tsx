@@ -37,7 +37,7 @@ export function Interstitial() {
     <motion.section
       ref={ref}
       aria-label="Interlude"
-      className="relative h-[100svh] w-full overflow-hidden"
+      className="relative aspect-video md:aspect-auto md:h-[100svh] w-full overflow-hidden"
       style={{ opacity: sectionOpacity, backgroundColor: "#000" }}
     >
       {/* Video — grows on scroll; overflow:hidden on section keeps it framed */}

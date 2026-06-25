@@ -2252,7 +2252,7 @@ function WaysToWorkSection() {
         <motion.p style={{ ...EYEBROW, textAlign: "center" }} {...up(0)}>Ways to Work With Us</motion.p>
 
         <WordLift
-          text="Start where it makes sense."
+          text="Start where it makes sense for your business."
           style={{
             fontFamily: ARCHIVO,
             fontWeight: 800,
@@ -2277,7 +2277,7 @@ function WaysToWorkSection() {
           }}
           {...up(0.08)}
         >
-          Every price is right here. No discovery call to learn what it costs.<br />No proposal built to upsell you, because I'd rather you decide for yourself than be sold.
+          Every price is right here.<br className="md:hidden" /> No discovery call to learn what it costs.<br />No proposal built to upsell you, because I'd rather you decide for yourself than be sold.
         </motion.p>
 
         {/* Top divider */}
