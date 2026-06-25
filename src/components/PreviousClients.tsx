@@ -33,7 +33,7 @@ export function PreviousClients() {
     <section className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
       <div className="mx-auto max-w-[1400px] px-6 pt-10 pb-4 md:px-12 md:py-24 lg:px-20">
         {/* AVANA logo — mobile only, sits above the Previous Clients label */}
-        <div className="md:hidden flex justify-center mb-10">
+        <div className="md:hidden flex justify-center mb-8">
           <AvanaLogo style={{ width: "min(80vw, 300px)" }} />
         </div>
 
