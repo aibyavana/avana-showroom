@@ -37,7 +37,7 @@ export function Interstitial() {
     <motion.section
       ref={ref}
       aria-label="Interlude"
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-[100svh] w-full overflow-hidden"
       style={{ opacity: sectionOpacity, backgroundColor: "#000" }}
     >
       {/* Video — grows on scroll; overflow:hidden on section keeps it framed */}
@@ -99,7 +99,7 @@ export function Interstitial() {
       {/* Top dissolve — cream bleeds in from Founder, merging the two sections */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[32vh] z-40"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[20vh] md:h-[32vh] z-40"
         style={{
           background:
             "linear-gradient(to bottom, rgba(247,244,239,1) 0%, rgba(247,244,239,0.6) 40%, rgba(247,244,239,0) 100%)",

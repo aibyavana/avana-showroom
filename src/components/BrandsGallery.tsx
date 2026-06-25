@@ -101,7 +101,7 @@ export function BrandsGallery() {
 
   // Lead-in / lead-out fractions — must match the useTransform call below.
   const RAIL_START = 0.05;
-  const RAIL_END   = 0.92;
+  const RAIL_END   = 0.96;
 
   // Measure rail travel at runtime and derive the exact section height needed.
   // containerHeight = railTravel / (RAIL_END - RAIL_START) + viewportHeight
@@ -141,7 +141,7 @@ export function BrandsGallery() {
       <div ref={ref} className="relative" style={{ height: sectionHeight }}>
         <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
           {/* Header — responsive padding */}
-          <div className="px-6 pt-14 md:px-12 lg:px-20 md:pt-20">
+          <div className="px-6 pt-6 md:px-12 lg:px-20 md:pt-20">
             <div className="mb-3 flex items-center gap-4 overflow-hidden">
               <motion.p
                 initial={reduce ? false : { opacity: 0, x: -16 }}

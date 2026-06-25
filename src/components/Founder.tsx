@@ -51,7 +51,7 @@ function MaskReveal({
             transition={{
               duration: 1.1,
               ease: [0.22, 1, 0.36, 1],
-              delay: 0.15 + i * 0.18,
+              delay: 0.05 + i * 0.1,
             }}
           >
             {word}
@@ -71,7 +71,7 @@ export function Founder() {
   const mobileHeadlineRef = useRef<HTMLDivElement>(null);
 
   const inView = useInView(headlineRef, { once: true, amount: 0.5 });
-  const mobileInView = useInView(mobileHeadlineRef, { once: true, amount: 0.5 });
+  const mobileInView = useInView(mobileHeadlineRef, { once: true, amount: 0.15 });
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -330,7 +330,7 @@ export function Founder() {
         />
 
         <Reveal
-          delay={0.2}
+          delay={0.1}
           className="relative mx-auto mt-10"
           style={{ width: "100%", aspectRatio: "3 / 4" }}
         >
@@ -363,7 +363,7 @@ export function Founder() {
         </Reveal>
 
         <Reveal
-          delay={0.3}
+          delay={0.15}
           className="mt-10 text-[0.65rem] uppercase"
           style={{ color: GOLD, fontFamily: "Arial, Helvetica, sans-serif", letterSpacing: "0.4em" }}
         >
@@ -371,7 +371,7 @@ export function Founder() {
         </Reveal>
 
         <Reveal
-          delay={0.5}
+          delay={0.25}
           className="mt-6 space-y-5"
           style={{
             color: WARM_GREY,
@@ -421,7 +421,7 @@ export function Founder() {
         </Reveal>
 
         {/* Mobile CTAs — stacked */}
-        <Reveal delay={0.8} className="mt-10">
+        <Reveal delay={0.4} className="mt-10">
           <button
             type="button"
             onClick={() => setWaitlistOpen(true)}
@@ -442,7 +442,7 @@ export function Founder() {
           </button>
         </Reveal>
 
-        <Reveal delay={0.95} className="mt-8">
+        <Reveal delay={0.55} className="mt-8">
           <a
             href={MAILTO}
             className="inline-block text-sm uppercase"

@@ -2215,7 +2215,7 @@ function HeroRow({
         {wireTransfer && onBookCall && <WireBlock align="left" onBookCall={onBookCall} />}
         <button
           onClick={() => setOpen(v => !v)}
-          style={{ display: "flex", alignItems: "center", gap: "0.45rem", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_SANS, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: GOLD_HEX }}
+          style={{ display: "flex", alignItems: "center", gap: "0.45rem", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_SANS, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: GOLD_HEX, marginTop: wireTransfer ? "1.25rem" : undefined }}
           aria-expanded={open}
         >
           <span style={{ display: "inline-block", fontSize: "1.05rem", lineHeight: 1, transition: reduce ? "none" : "transform 0.3s ease", transform: open ? "rotate(45deg)" : "rotate(0deg)" }}>+</span>
@@ -2661,7 +2661,20 @@ function WhyAvanaSection() {
         <motion.p style={{ ...EYEBROW, color: "rgba(255,255,255,0.7)" }} {...up(0)}>Why AVANA</motion.p>
 
         <WordLift
-          text="Built by an operator. Not a tech shop."
+          text="Built by an operator."
+          style={{
+            fontFamily: ARCHIVO,
+            fontWeight: 800,
+            fontSize: "clamp(2rem, 4vw, 3rem)",
+            letterSpacing: "-0.02em",
+            lineHeight: 1.12,
+            color: "#0A0A0F",
+            margin: 0,
+            maxWidth: "none",
+          }}
+        />
+        <WordLift
+          text="Not a tech shop."
           style={{
             fontFamily: ARCHIVO,
             fontWeight: 800,
@@ -2760,7 +2773,7 @@ function FinalCtaSection() {
           }}
           {...up(0.07)}
         >
-          You&rsquo;ve seen the math, your new executive team, and the price.<br />If it&rsquo;s a fit, let&rsquo;s get the contract signed and start building.
+          You&rsquo;ve seen the math, your new executive team,<br />and the price. If it&rsquo;s a fit, let&rsquo;s get the contract signed and start building.
         </motion.p>
 
         <motion.div {...up(0.14)}>

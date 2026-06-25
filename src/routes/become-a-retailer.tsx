@@ -717,7 +717,7 @@ const FormSection = React.forwardRef<HTMLElement>((_, ref) => {
                   lineHeight: 1.7,
                 }}
               >
-                We partner selectively. Every application is reviewed personally.
+                We partner selectively.<br />Every application is reviewed personally.
               </p>
             </form>
           </Reveal>
