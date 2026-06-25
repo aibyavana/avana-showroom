@@ -14,8 +14,8 @@
 
 **Build command:** `npm run build`
 **Deploy command:** `npx wrangler deploy`
-**Worker entry:** `dist/server/server.js` (Nitro cloudflare preset output — 3.3 kB entry, imports from `dist/server/assets/`)
-**Static assets:** `dist/client/` (served via Workers Assets at the edge)
+**Worker entry:** `.output/server/index.mjs` (full Nitro build — includes all file-system routes in `server/routes/` and middleware in `server/middleware/`; `no_bundle: true`)
+**Static assets:** `.output/public/` (served via Workers Assets at the edge; `binding: "ASSETS"`)
 
 `wrangler.jsonc` in the project root is the Workers config — points wrangler at the pre-built output (`main`, `assets.directory`). Without it, `wrangler deploy` tries to auto-configure by modifying `vite.config.ts`, which fails because `@lovable.dev/vite-tanstack-config` wraps the plugins array and there is no bare `plugins: []` to patch.
 

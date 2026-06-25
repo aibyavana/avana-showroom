@@ -12,4 +12,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: {
+    // Tell Nitro to scan server/ for file-system routes and middleware.
+    // Without this, server/routes/ and server/middleware/ are never picked up —
+    // Nitro only scans the root by default, which has no routes/ or middleware/ subdirs.
+    scanDirs: ["server"],
+  },
 });
