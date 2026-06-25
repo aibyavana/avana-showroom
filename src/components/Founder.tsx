@@ -442,7 +442,7 @@ export function Founder() {
           </button>
         </Reveal>
 
-        <Reveal delay={0.95} className="mt-8 flex justify-end">
+        <Reveal delay={0.95} className="mt-8">
           <a
             href={MAILTO}
             className="inline-block text-sm uppercase"

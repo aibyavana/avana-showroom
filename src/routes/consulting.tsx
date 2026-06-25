@@ -364,7 +364,7 @@ function HeroSection({ onBook }: { onBook: (e: React.MouseEvent) => void }) {
                   For those two, you get sixteen years of operating judgment and $15M in sales applied directly to your business: wholesale, DTC, collection audit and direction, Shopify, or wherever AI actually fits. Real strategy from someone who has carried the number, not theorized about it.
                 </p>
                 <p style={{ fontFamily: FONT_SANS, fontSize: "1.05rem", lineHeight: 1.9, color: WARM_GREY, margin: "0 0 2rem", maxWidth: "none" }}>
-                  If you're building something serious and want that kind of focus,<br /><strong>let's talk.</strong>
+                  If you're building something serious and want that kind of focus, <strong>let's talk.</strong>
                 </p>
               </div>
             </Reveal>
@@ -1363,7 +1363,6 @@ const IntakeFormSection = React.forwardRef<HTMLElement>((_, ref) => {
               lineHeight: 1.8,
               color: WARM_GREY,
               maxWidth: "none",
-              whiteSpace: "nowrap",
               margin: "0 0 2.5rem",
             }}
           >
@@ -1624,7 +1623,7 @@ const IntakeFormSection = React.forwardRef<HTMLElement>((_, ref) => {
                   lineHeight: 1.7,
                 }}
               >
-                Every intake is reviewed personally. I'll be in touch within 48 hours.
+                Every intake is reviewed personally.<br />I'll be in touch within 48 hours.
               </p>
             </form>
           </Reveal>

@@ -210,7 +210,7 @@ export function TopNav({
             transition={{ duration: reduce ? 0 : 0.3, ease }}
           >
             {/* Spacer that matches the nav bar height so links start below it */}
-            <div style={{ height: 52 }} />
+            <div style={{ height: 72 }} />
 
             {/* Gold hairline — editorial accent */}
             <div style={{ height: 1, backgroundColor: GOLD_HEX, opacity: 0.3 }} />

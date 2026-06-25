@@ -194,7 +194,7 @@ export function BrandsGallery() {
           </div>
 
           {/* Horizontal rail — cards slide left as user scrolls down */}
-          <div className="flex flex-1 items-center overflow-hidden">
+          <div className="flex flex-1 items-start pt-3 overflow-hidden md:items-center md:pt-0">
             <motion.div
               ref={railRef}
               className="flex items-center gap-[6vw] pl-[5vw] pr-[5vw] md:gap-[4vw] md:pl-[8vw] md:pr-[8vw]"

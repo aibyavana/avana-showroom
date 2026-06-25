@@ -30,7 +30,7 @@ const MASK_PROPS = (src: string) => ({
 export function PreviousClients() {
   return (
     <section className="relative w-full" style={{ backgroundColor: "#F7F4EF" }}>
-      <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12 md:py-24 lg:px-20">
+      <div className="mx-auto max-w-[1400px] px-6 pt-10 pb-4 md:px-12 md:py-24 lg:px-20">
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -174,6 +174,7 @@ function AiByAvana() {
       <FilmGrain />
       <CustomCursor />
       <TopNav
+        alwaysVisible
         background="rgba(10,10,10,0.88)"
         dark
       />
@@ -2053,7 +2054,6 @@ const QUIET_TIERS: QuietTier[] = [
 ];
 
 const LEDGER_COLS: CSSProperties = {
-  display: "grid",
   gridTemplateColumns: "1.3fr 2fr 0.9fr",
   gap: "2rem",
   alignItems: "start",
@@ -2671,7 +2671,6 @@ function WhyAvanaSection() {
             color: "#0A0A0F",
             margin: "0 0 2.4rem",
             maxWidth: "none",
-            whiteSpace: "nowrap",
           }}
         />
 
