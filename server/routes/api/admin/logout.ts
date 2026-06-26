@@ -1,6 +1,12 @@
-import { defineEventHandler, deleteCookie, sendRedirect } from 'h3'
+import { defineEventHandler, setCookie, sendRedirect } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  deleteCookie(event, 'admin_session', { path: '/' })
-  await sendRedirect(event, '/admin/login', 302)
+  setCookie(event, 'admin_session', '', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  })
+  return sendRedirect(event, '/admin/login', 302)
 })

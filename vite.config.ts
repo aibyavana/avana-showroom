@@ -17,5 +17,17 @@ export default defineConfig({
     // Without this, server/routes/ and server/middleware/ are never picked up —
     // Nitro only scans the root by default, which has no routes/ or middleware/ subdirs.
     scanDirs: ["server"],
+    // Preserve the custom domain route in the generated .output/server/wrangler.json.
+    // Without this, npx wrangler deploy warns it will remove avanashowroom.com from
+    // the Worker's custom domain routes, breaking the live site.
+    wrangler: {
+      routes: [
+        {
+          pattern: "avanashowroom.com",
+          zone_name: "avanashowroom.com",
+          custom_domain: true,
+        },
+      ],
+    },
   },
 });
