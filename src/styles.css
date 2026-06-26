@@ -44,6 +44,14 @@
   a, button, [role="button"] {
     cursor: none;
   }
+
+  .admin-cursor, .admin-cursor *, .admin-cursor a, .admin-cursor button, .admin-cursor [role="button"] {
+    cursor: auto !important;
+  }
+
+  .admin-cursor button, .admin-cursor a, .admin-cursor [role="button"] {
+    cursor: pointer !important;
+  }
 }
 
 @layer components {

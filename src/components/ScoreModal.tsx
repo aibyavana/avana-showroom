@@ -94,34 +94,38 @@ export function ScoreModal({
       });
     setSubmitting(false);
 
-    // 23505 = duplicate email+type — still confirm success
+    // 23505 = duplicate email+type — show success but do not re-run score
     if (dbError && dbError.code !== "23505") {
       setError("Something went wrong. Please try again.");
       return;
     }
+    const isDuplicate = dbError?.code === "23505";
 
     // Internal notification — fires immediately, non-blocking
     const label = type === 'ai_visibility' ? 'AI Visibility Score' : 'Shopify Health Check'
-    try {
-      await notifyLead({
-        data: {
-          subject: `New ${label} Request — ${parsed.data.firstName}`,
-          html: notifHtml(`New ${label} Request`, 'ai-by-avana', [
-            row('Name', parsed.data.firstName),
-            row('Email', parsed.data.email),
-            row('Store URL', parsed.data.storeUrl),
-            row('Score Type', label),
-          ]),
-        },
-      })
-    } catch (e) {
-      console.error('[email] notify failed:', e)
+    if (!isDuplicate) {
+      try {
+        await notifyLead({
+          data: {
+            subject: `New ${label} Request — ${parsed.data.firstName}`,
+            html: notifHtml(`New ${label} Request`, 'ai-by-avana', [
+              row('Name', parsed.data.firstName),
+              row('Email', parsed.data.email),
+              row('Store URL', parsed.data.storeUrl),
+              row('Score Type', label),
+            ]),
+          },
+        })
+      } catch (e) {
+        console.error('[email] notify failed:', e)
+      }
     }
 
     // Show success to user immediately — they are done here
     setDone(true);
 
-    // Kick background score run — do NOT await; user already sees success
+    // Kick background score run — skip if duplicate submission
+    if (isDuplicate) return;
     kickScoreRun({
       data: {
         firstName: parsed.data.firstName,

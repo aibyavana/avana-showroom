@@ -1,26 +1,73 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AvanaLogo } from '@/components/AvanaLogo'
 
 export const Route = createFileRoute('/admin/login')({
   component: AdminLogin,
 })
 
+const THEMES = {
+  dark: {
+    bg:      '#0A0A0F',
+    text:    '#F7F4EF',
+    gold:    '#B8902E',
+    muted:   'rgba(247,244,239,0.55)',
+    border:  'rgba(184,144,46,0.3)',
+    inputBg: 'rgba(255,255,255,0.04)',
+    errBg:   'rgba(220,38,38,0.12)',
+    errBdr:  'rgba(220,38,38,0.35)',
+    errText: '#FCA5A5',
+    btnBg:   '#B8902E',
+    btnDis:  'rgba(184,144,46,0.45)',
+    logoFilter: 'brightness(0) invert(1)',
+  },
+  light: {
+    bg:      '#F7F4EF',
+    text:    '#0A0A0F',
+    gold:    '#8C6A1A',
+    muted:   'rgba(10,10,15,0.55)',
+    border:  'rgba(140,106,26,0.35)',
+    inputBg: 'rgba(10,10,15,0.04)',
+    errBg:   'rgba(220,38,38,0.07)',
+    errBdr:  'rgba(220,38,38,0.28)',
+    errText: '#DC2626',
+    btnBg:   '#8C6A1A',
+    btnDis:  'rgba(140,106,26,0.40)',
+    logoFilter: 'none',
+  },
+}
+type ThemeKey = keyof typeof THEMES
+
 function AdminLogin() {
-  const [pw, setPw] = useState('')
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [pw, setPw]               = useState('')
+  const [error, setError]         = useState(false)
+  const [rateLimited, setRateLimited] = useState(false)
+  const [loading, setLoading]     = useState(false)
+  const [theme, setTheme]         = useState<ThemeKey>('dark')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('admin_theme')
+    if (stored === 'light' || stored === 'dark') setTheme(stored)
+  }, [])
+
+  const t = THEMES[theme]
 
   async function handleLogin() {
     if (!pw || loading) return
     setLoading(true)
     setError(false)
+    setRateLimited(false)
     try {
       const res = await fetch('/api/admin/login', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ password: pw }).toString(),
+        body:    new URLSearchParams({ password: pw }).toString(),
       })
+      if (res.status === 429) {
+        setRateLimited(true)
+        setLoading(false)
+        return
+      }
       const data = await res.json()
       if (data.ok) {
         window.location.href = '/admin'
@@ -35,28 +82,38 @@ function AdminLogin() {
   }
 
   return (
-    <div style={{
+    <div className="admin-cursor" style={{
       minHeight: '100dvh',
-      backgroundColor: '#0A0A0F',
+      backgroundColor: t.bg,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem',
-      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontFamily: "'Archivo', Arial, Helvetica, sans-serif",
     }}>
       <div style={{ width: '100%', maxWidth: 380 }}>
         <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
-          <AvanaLogo size="header" style={{ width: 140, filter: 'brightness(0) invert(1)' }} />
-          <p style={{ marginTop: '0.75rem', fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#B8902E' }}>
+          <AvanaLogo size="header" style={{ width: 140, filter: t.logoFilter }} />
+          <p style={{ marginTop: '0.75rem', fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: t.gold }}>
             Admin Access
           </p>
         </div>
 
-        {error && (
+        {rateLimited && (
           <p style={{
             marginBottom: '1.25rem', padding: '0.75rem 1rem',
-            backgroundColor: 'rgba(220,38,38,0.12)', border: '1px solid rgba(220,38,38,0.35)',
-            borderRadius: 4, fontSize: '0.8rem', color: '#FCA5A5', textAlign: 'center',
+            backgroundColor: t.errBg, border: `1px solid ${t.errBdr}`,
+            borderRadius: 4, fontSize: '0.8rem', color: t.errText, textAlign: 'center',
+          }}>
+            Too many attempts. Try again in 15 minutes.
+          </p>
+        )}
+
+        {error && !rateLimited && (
+          <p style={{
+            marginBottom: '1.25rem', padding: '0.75rem 1rem',
+            backgroundColor: t.errBg, border: `1px solid ${t.errBdr}`,
+            borderRadius: 4, fontSize: '0.8rem', color: t.errText, textAlign: 'center',
           }}>
             Incorrect password. Try again.
           </p>
@@ -65,7 +122,7 @@ function AdminLogin() {
         <div style={{ marginBottom: '1.25rem' }}>
           <label style={{
             display: 'block', fontSize: '0.65rem', letterSpacing: '0.2em',
-            textTransform: 'uppercase', color: '#B8902E', marginBottom: '0.5rem',
+            textTransform: 'uppercase', color: t.gold, marginBottom: '0.5rem',
           }}>
             Password
           </label>
@@ -75,29 +132,33 @@ function AdminLogin() {
             onChange={e => setPw(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
             autoFocus
+            disabled={rateLimited}
             style={{
               display: 'block', width: '100%', padding: '0.75rem 1rem',
-              backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(184,144,46,0.3)',
-              borderRadius: 4, color: '#F7F4EF', fontSize: '0.95rem',
+              backgroundColor: t.inputBg, border: `1px solid ${t.border}`,
+              borderRadius: 4, color: t.text, fontSize: '0.95rem',
               outline: 'none', boxSizing: 'border-box',
+              fontFamily: "'Archivo', Arial, Helvetica, sans-serif",
             }}
           />
         </div>
 
         <button
           onClick={handleLogin}
-          disabled={loading || !pw}
+          disabled={loading || !pw || rateLimited}
           style={{
             display: 'block', width: '100%', padding: '0.8rem',
-            backgroundColor: loading || !pw ? 'rgba(184,144,46,0.45)' : '#B8902E',
+            backgroundColor: loading || !pw || rateLimited ? t.btnDis : t.btnBg,
             border: 'none', borderRadius: 4,
-            color: '#0A0A0F', fontSize: '0.8rem', fontWeight: 700,
+            color: theme === 'dark' ? '#0A0A0F' : '#F7F4EF',
+            fontSize: '0.8rem', fontWeight: 700,
             letterSpacing: '0.15em', textTransform: 'uppercase',
-            cursor: loading || !pw ? 'not-allowed' : 'pointer',
+            cursor: loading || !pw || rateLimited ? 'not-allowed' : 'pointer',
             transition: 'background-color 0.15s',
+            fontFamily: "'Archivo', Arial, Helvetica, sans-serif",
           }}
         >
-          {loading ? 'Verifying…' : 'Enter'}
+          {loading ? 'Verifying...' : 'Enter'}
         </button>
       </div>
     </div>

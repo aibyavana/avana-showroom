@@ -648,6 +648,7 @@ export async function runScoreAndEmail(payload: ScoreRunPayload): Promise<void> 
     const { error } = await resend.emails.send({
       from: 'Amanda at AVANA <amanda@mail.avanashowroom.com>',
       to: email,
+      cc: 'amanda@avanashowroom.com',
       replyTo: 'amanda@avanashowroom.com',
       subject,
       html,
@@ -659,7 +660,7 @@ export async function runScoreAndEmail(payload: ScoreRunPayload): Promise<void> 
       await updateScoreStatus(email, storeUrl, type, 'failed', errDetail)
       await sendFallbackAlert(firstName, email, storeUrl, errDetail)
     } else {
-      console.log(`[score-runner] Report emailed to ${email}`)
+      console.log(`[score-runner] Report emailed to ${email}, cc amanda@avanashowroom.com`)
       await updateScoreStatus(email, storeUrl, type, 'sent')
     }
   } catch (err) {
