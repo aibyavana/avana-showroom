@@ -832,7 +832,9 @@ function WhatWeBuildSection() {
           {...up(0.1)}
         >
           Trained on your voice, products, margins, customers, and the industry around you.<br />
+          <span className="md:hidden"><br /></span>
           It does the work of the roles you&rsquo;re overpaying for, lives in one place, and runs every day.<br />
+          <span className="md:hidden"><br /></span>
           No Subscription. Your Build. Your business.
         </motion.p>
       </div>
