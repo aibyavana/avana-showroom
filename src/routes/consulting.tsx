@@ -129,6 +129,24 @@ const schema = z.object({
 
 // ── Route ─────────────────────────────────────────────────────────────────────
 
+const CONSULTING_SCHEMA = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Consulting — AVANA Showroom",
+  "provider": {
+    "@type": "Organization",
+    "name": "AVANA Showroom",
+    "url": "https://avanashowroom.com"
+  },
+  "description": "Hands-on consulting for fashion brands serious about scaling. Wholesale strategy, DTC and ecommerce, collection design, photography, Shopify, and AI strategy from sixteen years inside the fashion industry.",
+  "url": "https://avanashowroom.com/consulting",
+  "areaServed": "Worldwide",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Fashion brands at any stage seeking hands-on strategy from an industry expert"
+  }
+});
+
 export const Route = createFileRoute("/consulting")({
   head: () => ({
     meta: [
@@ -167,6 +185,7 @@ function ConsultingPage() {
 
   return (
     <div className="relative min-h-screen" style={{ backgroundColor: CANVAS, paddingTop: "108px" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: CONSULTING_SCHEMA }} />
       <FilmGrain />
       <CustomCursor />
       <TopNav showAtEnds background="color-mix(in oklab, #DDDBD7 85%, transparent)" />

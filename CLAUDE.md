@@ -56,11 +56,11 @@
 | `src/components/ConsultingCallModal.tsx` | Consulting booking modal — 30 min/$250 or 60 min/$500; bookingType:"consulting" |
 | `src/integrations/supabase/client.ts` | Supabase client |
 | `src/integrations/supabase/types.ts` | Generated Supabase types — see note below |
-| `src/routes/admin/index.tsx` | Admin dashboard — revenue, ops health, lead tables. Loader-protected (redirects to `/admin/login` if not authed). |
-| `src/routes/admin/login.tsx` | Admin login form — POST to `/api/admin/login`, HttpOnly cookie session |
-| `src/lib/admin-data.ts` | `fetchAdminData` createServerFn — fetches all 8 Supabase tables server-side, computes metrics |
+| `src/routes/admin/index.tsx` | Admin dashboard — analytics, ops health, lead tables. Archivo font, dark/light theme toggle (localStorage `admin_theme`), CF analytics section. |
+| `src/routes/admin/login.tsx` | Admin login — POST to `/api/admin/login`, HttpOnly cookie, rate-limit error display, theme-aware. |
 | `server/middleware/admin-auth.ts` | Nitro middleware — guards all `/admin/*` routes, checks `admin_session` cookie vs `ADMIN_TOKEN` |
-| `server/routes/api/admin/login.ts` | POST handler — compares password to `ADMIN_PASSWORD`, sets 7-day cookie |
+| `server/routes/api/admin/login.ts` | POST handler — password check, sets 7-day cookie. Rate limiting: 5 failed attempts per IP per 15 min → 429. |
+| `server/routes/api/admin/data.ts` | Fetches all 8 Supabase tables + Cloudflare analytics (CF_ZONE_ID + CF_API_TOKEN secrets). Returns `analytics: null` if secrets absent. |
 | `server/routes/api/admin/logout.ts` | Clears `admin_session` cookie, redirects to `/admin/login` |
 | `public/robots.txt` | Allows all crawlers incl. 12 named AI bots; references sitemap |
 | `public/sitemap.xml` | All 5 routes with priorities |
@@ -227,6 +227,66 @@ Shopify pages front-load 8000+ chars of `<head>` CSS font-face declarations, pre
 
 ---
 
+## Admin Dashboard — Locked Decisions (Jun 2026)
+
+### Font
+Archivo, weights 400;500;600;700;800. Loaded via Google Fonts in `src/routes/__root.tsx`. All admin inline styles use `fontFamily: 'Archivo, Arial, Helvetica, sans-serif'` — do not revert to bare Arial.
+
+### Dark / Light Theme
+Theme state lives in `src/routes/admin/index.tsx` and `src/routes/admin/login.tsx`. Persisted to `localStorage` key `admin_theme` (`'dark'` | `'light'`). Default: `'dark'`. Toggle button (sun/moon SVG) in dashboard header header. `THEMES` object with `dark` and `light` token sets; `ThemeCtx` React context propagated via `useT()` hook to all sub-components. Both admin pages read localStorage on mount.
+
+### Cloudflare Analytics
+`fetchCFAnalytics()` in `server/routes/api/admin/data.ts` queries Cloudflare's GraphQL API.
+
+**Dataset:** `httpRequests1dGroups` — daily rollup, supports 30-day range, fields `sum { pageViews requests }`. Do NOT use `httpRequestsAdaptiveGroups` — it has a 1-day range limit on the free plan and different field names.
+
+**Secrets required (set via `npx wrangler secret put`):**
+- `CF_ZONE_ID` — zone ID from the Cloudflare dashboard zone overview sidebar
+- `CF_API_TOKEN` — API token with "Read analytics for a zone" permission (use the template; `Analytics:Read` only)
+
+If either secret is absent, the endpoint returns `analytics: null` and the dashboard shows "Analytics not configured" — graceful, not an error.
+
+**Note on field naming:** `sum.pageViews` = actual page view count; `sum.requests` = total HTTP requests (higher). Dashboard shows `sum.pageViews` as "visitors" and `sum.requests` as "page views" — aligned to what CF labels them in the UI.
+
+### Rate Limiting (Login)
+Module-level `Map<string, { count: number; resetAt: number }>` in `server/routes/api/admin/login.ts`. IP sourced from `cf-connecting-ip` header (Cloudflare sets this) with fallback to `x-forwarded-for`. 5 failed attempts per IP per 15-minute window → HTTP 429. Successful login clears the entry. Login page detects 429 and shows "Too many attempts. Try again in 15 minutes." **Caveat:** in-memory state does not persist across CF Worker PoP restarts — effective against automated attacks but not distributed multi-PoP bypass.
+
+### Cursor Restore
+Global `cursor: none` in `src/styles.css` applies to the whole site. Admin pages need it restored. Solution: `admin-cursor` class in `styles.css` that sets `cursor: auto !important` on the root div and `cursor: pointer !important` on interactive elements. Both `src/routes/admin/index.tsx` and `src/routes/admin/login.tsx` have `className="admin-cursor"` on their root div. Do not remove this class.
+
+### Revenue Section
+The revenue section (kit sales, booking revenue, `revenueByDay` chart) has been removed from the dashboard UI. The data is still fetched and computed in `data.ts` (removing it would break the response shape) but nothing in `index.tsx` renders it.
+
+---
+
+## Cloudflare Worker Secrets — Critical Notes
+
+**Tab-character pitfall (burned Jun 2026):** If `RESEND_API_KEY` or `PAGESPEED_API_KEY` were set via paste (clipboard sometimes appends a trailing tab), `env.RESEND_API_KEY` returns `"actualvalue\t"` and lookups silently fail. The secret name `RESEND_API_KEY\t` appears as a distinct entry in `wrangler secret list`.
+
+**Always set secrets as:**
+```bash
+echo "your_actual_value" | npx wrangler secret put RESEND_API_KEY
+```
+Never paste directly into a `wrangler secret put` interactive prompt if the clipboard could add whitespace.
+
+If emails or PageSpeed stop working and the API keys look correct, check `wrangler secret list` for tab-suffixed duplicates.
+
+---
+
+## Email Deliverability — Locked (Jun 2026)
+
+**SPF record for `mail.avanashowroom.com`** (Resend sending subdomain):
+```
+TXT mail.avanashowroom.com  v=spf1 include:_spf.resend.com ~all
+```
+Added Jun 2026. Without this, Resend-sent emails from `@mail.avanashowroom.com` fail SPF and land in spam. The parent domain `avanashowroom.com` SPF only authorizes Google — it does NOT cover the subdomain.
+
+**DKIM:** `resend._domainkey.mail.avanashowroom.com` CNAME — was correct before this fix.
+
+**Amanda CC pattern:** `kickScoreRun` in `src/lib/score-runner.ts` sends the client report with `cc: 'amanda@avanashowroom.com'` on the same `resend.emails.send()` call. Do NOT use a separate second call for the Amanda copy — it fails silently when the first call succeeds. One call, `cc:` field, guaranteed delivery.
+
+---
+
 ## Email Templates — Locked Decisions
 
 ### Resend config
@@ -301,6 +361,17 @@ The 10 Health Check rows are direct `<tr>` rows in **one shared outer table**, n
 
 The band chip span has `white-space:nowrap` to prevent "NEEDS WORK" wrapping to two lines. Both the `width="96"` HTML attribute and `width:96px` CSS style are set on the chip td — HTML attribute is more reliable in email clients that ignore CSS width.
 
+### ScoreModal — Duplicate Submission Guard (Jun 2026)
+
+Supabase returns error code `23505` (unique constraint violation) when the same email+type combo is submitted twice. `ScoreModal.tsx` detects this:
+- Sets `done: true` so the user sees the success screen (they already submitted — no error shown)
+- Skips `notifyLead` (no duplicate internal alert)
+- Skips `kickScoreRun` (score already ran; do not re-run or re-send the report)
+
+To clear a test email for re-testing: delete the row from `score_leads` in Supabase.
+
+---
+
 ### Async fire-and-forget pattern
 
 `kickScoreRun` is a TanStack Start server function that fires `runScoreAndEmail()` without awaiting and returns `{ started: true }` immediately. This works on Node.js (dev server process stays alive).
@@ -368,7 +439,7 @@ Do not deploy without clearing these. They work on local Node dev and silently f
 
 5. **All API keys must be added to Cloudflare Pages env vars** (not just local `.env`). Missing keys = silent runtime failures.
 
-   Required: `RESEND_API_KEY`, `PAGESPEED_API_KEY`, `ANTHROPIC_API_KEY`, `VITE_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_ENV`, `PAYPAL_WEBHOOK_ID`, `SUPABASE_SERVICE_ROLE_KEY`, Supabase URL + anon key, `ADMIN_PASSWORD` (the login password for `/admin`), `ADMIN_TOKEN` (the session cookie value — generate a random 32+ char string, keep it secret).
+   Required: `RESEND_API_KEY`, `PAGESPEED_API_KEY`, `ANTHROPIC_API_KEY`, `VITE_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_ENV`, `PAYPAL_WEBHOOK_ID`, `SUPABASE_SERVICE_ROLE_KEY`, Supabase URL + anon key, `ADMIN_PASSWORD` (the login password for `/admin`), `ADMIN_TOKEN` (the session cookie value — generate a random 32+ char string, keep it secret), `CF_ZONE_ID` + `CF_API_TOKEN` (optional — analytics section shows "not configured" if absent).
 
 ---
 

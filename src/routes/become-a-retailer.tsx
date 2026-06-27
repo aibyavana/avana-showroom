@@ -80,6 +80,24 @@ const waitlistSchema = z.object({
 
 // ── Route ────────────────────────────────────────────────────────────────────
 
+const RETAILER_SCHEMA = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Retailer Partnership — AVANA Showroom",
+  "provider": {
+    "@type": "Organization",
+    "name": "AVANA Showroom",
+    "url": "https://avanashowroom.com"
+  },
+  "description": "Apply to stock AVANA's curated portfolio of resortwear brands. Retail partners receive exclusive campaign assets, global audience exposure, and local mailblast inclusion.",
+  "url": "https://avanashowroom.com/become-a-retailer",
+  "areaServed": "Worldwide",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Boutique retailers and multi-brand stores seeking curated resortwear wholesale partnerships"
+  }
+});
+
 export const Route = createFileRoute("/become-a-retailer")({
   head: () => ({
     meta: [
@@ -118,6 +136,7 @@ function BecomeARetailer() {
 
   return (
     <div className="relative min-h-screen" style={{ backgroundColor: CANVAS, paddingTop: "108px" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: RETAILER_SCHEMA }} />
       <FilmGrain />
       <CustomCursor />
       <TopNav showAtEnds background="color-mix(in oklab, #DDDBD7 85%, transparent)" />
