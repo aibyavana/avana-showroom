@@ -100,15 +100,25 @@ const fmtTime  = (iso: string) => new Date(iso).toLocaleString('en-CA', { dateSt
 const fmtShort = (iso: string) => iso.slice(5, 10)
 
 // ── Sub-components (use ThemeCtx) ──────────────────────────────────────────────
-function Card({ label, value, sub, highlight }: { label: string; value: string | number; sub?: string; highlight?: 'warn' | 'ok' }) {
+function Card({ label, value, sub, highlight, onClick, active }: { label: string; value: string | number; sub?: string; highlight?: 'warn' | 'ok'; onClick?: () => void; active?: boolean }) {
   const t = useT()
-  const borderColor = highlight === 'warn' ? t.redBdr : highlight === 'ok' ? 'rgba(34,197,94,0.3)' : t.borderG
-  const valueColor  = highlight === 'warn' ? t.red   : highlight === 'ok' ? t.green : t.text
+  const borderColor = active ? t.gold : highlight === 'warn' ? t.redBdr : highlight === 'ok' ? 'rgba(34,197,94,0.3)' : t.borderG
+  const valueColor  = highlight === 'warn' ? t.red : highlight === 'ok' ? t.green : t.text
   return (
-    <div style={{ backgroundColor: t.cardBg, border: `1px solid ${borderColor}`, borderRadius: 6, padding: '1.25rem 1.5rem' }}>
-      <p style={{ fontFamily: t.font, fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: t.gold, margin: '0 0 0.6rem' }}>{label}</p>
+    <div
+      onClick={onClick}
+      style={{
+        backgroundColor: active ? 'rgba(184,144,46,0.08)' : t.cardBg,
+        border: `1px solid ${borderColor}`,
+        borderRadius: 6, padding: '1.25rem 1.5rem',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'border-color 0.15s, background-color 0.15s',
+      }}
+    >
+      <p style={{ fontFamily: t.font, fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: active ? t.gold : t.gold, margin: '0 0 0.6rem' }}>{label}</p>
       <p style={{ fontFamily: t.mono, fontSize: '1.8rem', fontWeight: 700, color: valueColor, margin: '0 0 0.3rem', lineHeight: 1 }}>{value}</p>
       {sub && <p style={{ fontFamily: t.font, fontSize: '0.72rem', color: t.muted, margin: 0 }}>{sub}</p>}
+      {onClick && <p style={{ fontFamily: t.mono, fontSize: '0.58rem', color: active ? t.gold : t.muted, margin: '0.5rem 0 0', letterSpacing: '0.12em' }}>{active ? '▼ viewing' : '▶ click to view'}</p>}
     </div>
   )
 }
@@ -215,15 +225,15 @@ function AdminDashboard() {
   const { metrics, opsIssues, revenueByDay, recent, funnel, analytics, fetchedAt } = data
   const hasOps = opsIssues.stuckKits.length > 0 || opsIssues.failedScores.length > 0 || opsIssues.stuckScores.length > 0
 
-  const tabs = [
-    { id: 'kits',        label: `Kits (${recent.kitLeads.length})` },
-    { id: 'consulting',  label: `Consulting (${recent.consultingIntake.length})` },
-    { id: 'bookings',    label: `Bookings (${recent.bookings.length})` },
-    { id: 'scores',      label: `Scores (${recent.scoreLeads.length})` },
-    { id: 'insider',     label: `Insider (${recent.insiderSubs.length})` },
-    { id: 'mh',          label: `Market Hitch (${recent.marketHitch.length})` },
-    { id: 'retailerAI',  label: `Retailer AI (${recent.retailerAI.length})` },
-    { id: 'retailerApp', label: `Applications (${recent.retailerApps.length})` },
+  const leadCards = [
+    { id: 'scores',      label: 'Score Requests',        value: metrics.scoreRequests,       sub: `${metrics.scoreByStatus.sent} sent · ${metrics.scoreByStatus.pending} pending · ${metrics.scoreByStatus.failed} failed`, highlight: (metrics.scoreByStatus.failed > 0 || metrics.scoreStuck > 0) ? 'warn' as const : undefined },
+    { id: 'consulting',  label: 'Consulting Inquiries',  value: metrics.consultingInquiries, sub: 'intake form submissions' },
+    { id: 'kits',        label: 'Kit Leads',             value: recent.kitLeads.length,      sub: `${recent.kitLeads.filter((k: any) => k.paid).length} paid`, highlight: opsIssues.stuckKits.length > 0 ? 'warn' as const : undefined },
+    { id: 'bookings',    label: 'Bookings',              value: recent.bookings.length,      sub: `${recent.bookings.filter((b: any) => b.paid).length} paid` },
+    { id: 'insider',     label: 'Insider Subscribers',   value: metrics.insiderSubs },
+    { id: 'mh',          label: 'Market Hitch Waitlist', value: metrics.marketHitch },
+    { id: 'retailerAI',  label: 'Retailer AI Waitlist',  value: metrics.retailerAI },
+    { id: 'retailerApp', label: 'Retailer Applications', value: metrics.retailerApps },
   ]
 
   return (
@@ -325,17 +335,102 @@ function AdminDashboard() {
             </section>
           )}
 
-          {/* Lead Counts */}
+          {/* Lead Command Center */}
           <section style={{ marginBottom: '2.5rem' }}>
-            <SectionHead title="Lead Counts" />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '1rem' }}>
-              <Card label="Score Requests"        value={metrics.scoreRequests}       sub={`${metrics.scoreByStatus.sent} sent · ${metrics.scoreByStatus.pending} pending · ${metrics.scoreByStatus.failed} failed`} highlight={metrics.scoreByStatus.failed > 0 || metrics.scoreStuck > 0 ? 'warn' : undefined} />
-              <Card label="Consulting Inquiries"  value={metrics.consultingInquiries} sub="intake form submissions" />
-              <Card label="Insider Subscribers"   value={metrics.insiderSubs} />
-              <Card label="Market Hitch Waitlist" value={metrics.marketHitch} />
-              <Card label="Retailer AI Waitlist"  value={metrics.retailerAI} />
-              <Card label="Retailer Applications" value={metrics.retailerApps} />
-              <Card label="Total Leads"           value={metrics.totalLeads}          sub="across all forms" />
+            <SectionHead title="Leads" />
+
+            {/* Clickable cards — click any to view records inline below */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              {leadCards.map(card => (
+                <Card
+                  key={card.id}
+                  label={card.label}
+                  value={card.value}
+                  sub={card.sub}
+                  highlight={card.highlight}
+                  active={activeTab === card.id}
+                  onClick={() => setActiveTab(card.id)}
+                />
+              ))}
+              <Card label="Total Leads" value={metrics.totalLeads} sub="across all forms" />
+            </div>
+
+            {/* Inline records panel */}
+            <div style={{ backgroundColor: t.cardBg, border: `1px solid ${t.borderG}`, borderRadius: 6, overflow: 'hidden' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 1.25rem', borderBottom: `1px solid ${t.borderG}` }}>
+                <span style={{ fontFamily: t.font, fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: t.gold }}>
+                  {leadCards.find(c => c.id === activeTab)?.label ?? activeTab} — most recent 20
+                </span>
+                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                  {leadCards.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => setActiveTab(c.id)}
+                      title={c.label}
+                      style={{
+                        fontFamily: t.mono, fontSize: '0.58rem', letterSpacing: '0.08em',
+                        padding: '0.25rem 0.55rem', borderRadius: 3,
+                        border: `1px solid ${activeTab === c.id ? t.gold : t.border}`,
+                        backgroundColor: activeTab === c.id ? 'rgba(184,144,46,0.12)' : 'transparent',
+                        color: activeTab === c.id ? t.gold : t.muted, cursor: 'pointer',
+                      }}
+                    >
+                      {c.label.split(' ')[0]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ padding: '0.25rem 0' }}>
+                {activeTab === 'scores' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Store URL', 'Type', 'Status']}
+                    rows={recent.scoreLeads.map((s: any) => [fmtDate(s.created_at), s.first_name, s.email, s.store_url, s.type, s.score_status])}
+                  />
+                )}
+                {activeTab === 'consulting' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Brand', 'Website', 'Areas']}
+                    rows={recent.consultingIntake.map((r: any) => [fmtDate(r.created_at), `${r.first_name} ${r.last_name}`, r.email, r.brand_name, r.website, r.areas])}
+                  />
+                )}
+                {activeTab === 'kits' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Paid', 'Kit Sent', 'Order ID']}
+                    rows={recent.kitLeads.map((k: any) => [fmtDate(k.created_at), k.first_name, k.email, k.paid ? `Yes ${k.paid_at ? fmtDate(k.paid_at) : ''}` : 'No', k.kit_sent ? 'Yes' : k.paid ? 'No' : '—', k.paypal_order_id])}
+                  />
+                )}
+                {activeTab === 'bookings' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Type', 'Duration', 'Amount', 'Paid', 'Slot']}
+                    rows={recent.bookings.map((b: any) => [fmtDate(b.created_at), b.first_name, b.email, b.booking_type, `${b.duration_minutes}min`, fmt$(b.amount_cents / 100), b.paid ? `Yes ${b.paid_at ? fmtDate(b.paid_at) : ''}` : 'No', b.slot_time ? fmtTime(b.slot_time) : '—'])}
+                  />
+                )}
+                {activeTab === 'insider' && (
+                  <DataTable
+                    headers={['Date', 'Email']}
+                    rows={recent.insiderSubs.map((s: any) => [fmtDate(s.created_at), s.email])}
+                  />
+                )}
+                {activeTab === 'mh' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Company', 'Audience']}
+                    rows={recent.marketHitch.map((r: any) => [fmtDate(r.created_at), r.name, r.email, r.company, r.audience])}
+                  />
+                )}
+                {activeTab === 'retailerAI' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email']}
+                    rows={recent.retailerAI.map((r: any) => [fmtDate(r.created_at), r.first_name, r.email])}
+                  />
+                )}
+                {activeTab === 'retailerApp' && (
+                  <DataTable
+                    headers={['Date', 'Name', 'Email', 'Store', 'Website', 'WhatsApp']}
+                    rows={recent.retailerApps.map((r: any) => [fmtDate(r.created_at), `${r.first_name} ${r.last_name}`, r.email, r.store_name, r.website, r.whatsapp])}
+                  />
+                )}
+              </div>
             </div>
           </section>
 
@@ -350,94 +445,6 @@ function AdminDashboard() {
             <p style={{ fontFamily: t.mono, fontSize: '0.65rem', color: t.muted, marginTop: '0.75rem' }}>
               Cross-referenced by exact email match.
             </p>
-          </section>
-
-          {/* Lead Tables */}
-          <section>
-            <SectionHead title="Recent Leads (last 20 per table)" />
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '1.25rem' }}>
-              {tabs.map(tb => (
-                <button
-                  key={tb.id}
-                  onClick={() => setActiveTab(tb.id)}
-                  style={{
-                    fontFamily: t.mono, fontSize: '0.65rem', letterSpacing: '0.1em',
-                    padding: '0.4rem 0.85rem', borderRadius: 4,
-                    border: `1px solid ${activeTab === tb.id ? t.gold : t.borderG}`,
-                    backgroundColor: activeTab === tb.id ? 'rgba(184,144,46,0.10)' : 'transparent',
-                    color: activeTab === tb.id ? t.gold : t.muted, cursor: 'pointer',
-                  }}
-                >
-                  {tb.label}
-                </button>
-              ))}
-            </div>
-
-            {activeTab === 'kits' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Paid', 'Kit Sent', 'Order ID']}
-                rows={recent.kitLeads.map((k: any) => [
-                  fmtDate(k.created_at), k.first_name, k.email,
-                  k.paid ? `Yes ${k.paid_at ? fmtDate(k.paid_at) : ''}` : 'No',
-                  k.kit_sent ? 'Yes' : k.paid ? 'No' : '—',
-                  k.paypal_order_id,
-                ])}
-              />
-            )}
-            {activeTab === 'consulting' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Brand', 'Website', 'Areas']}
-                rows={recent.consultingIntake.map((r: any) => [
-                  fmtDate(r.created_at), `${r.first_name} ${r.last_name}`, r.email, r.brand_name, r.website, r.areas,
-                ])}
-              />
-            )}
-            {activeTab === 'bookings' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Type', 'Duration', 'Amount', 'Paid', 'Slot']}
-                rows={recent.bookings.map((b: any) => [
-                  fmtDate(b.created_at), b.first_name, b.email,
-                  b.booking_type, `${b.duration_minutes}min`,
-                  fmt$(b.amount_cents / 100),
-                  b.paid ? `Yes ${b.paid_at ? fmtDate(b.paid_at) : ''}` : 'No',
-                  b.slot_time ? fmtTime(b.slot_time) : '—',
-                ])}
-              />
-            )}
-            {activeTab === 'scores' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Store URL', 'Type', 'Status']}
-                rows={recent.scoreLeads.map((s: any) => [
-                  fmtDate(s.created_at), s.first_name, s.email, s.store_url, s.type, s.score_status,
-                ])}
-              />
-            )}
-            {activeTab === 'insider' && (
-              <DataTable
-                headers={['Date', 'Email']}
-                rows={recent.insiderSubs.map((s: any) => [fmtDate(s.created_at), s.email])}
-              />
-            )}
-            {activeTab === 'mh' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Company', 'Audience']}
-                rows={recent.marketHitch.map((r: any) => [fmtDate(r.created_at), r.name, r.email, r.company, r.audience])}
-              />
-            )}
-            {activeTab === 'retailerAI' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email']}
-                rows={recent.retailerAI.map((r: any) => [fmtDate(r.created_at), r.first_name, r.email])}
-              />
-            )}
-            {activeTab === 'retailerApp' && (
-              <DataTable
-                headers={['Date', 'Name', 'Email', 'Store', 'Website', 'WhatsApp']}
-                rows={recent.retailerApps.map((r: any) => [
-                  fmtDate(r.created_at), `${r.first_name} ${r.last_name}`, r.email, r.store_name, r.website, r.whatsapp,
-                ])}
-              />
-            )}
           </section>
 
         </div>
