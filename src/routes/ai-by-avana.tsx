@@ -760,7 +760,38 @@ function WhatWeBuildSection() {
       <div className="mx-auto max-w-[1140px] px-8 md:px-16 text-center" style={{ marginBottom: "clamp(2.5rem,5vh,4rem)" }}>
         <motion.p style={EYEBROW} {...up(0)}>What We Build</motion.p>
 
-        <div style={{ margin: "0 auto 1.6rem" }}>
+        {/* Mobile heading */}
+        <div className="md:hidden" style={{ margin: "0 auto 1.6rem" }}>
+          <WordLift
+            text="A private AI"
+            style={{
+              fontFamily: ARCHIVO,
+              fontWeight: 800,
+              fontSize: "clamp(2rem, 8vw, 3rem)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.15,
+              color: CREAM,
+              margin: 0,
+              display: "block",
+            }}
+          />
+          <WordLift
+            text="operating system"
+            style={{
+              fontFamily: ARCHIVO,
+              fontWeight: 800,
+              fontSize: "clamp(2rem, 8vw, 3rem)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.15,
+              color: CREAM,
+              margin: 0,
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* Desktop heading */}
+        <div className="hidden md:block" style={{ margin: "0 auto 1.6rem" }}>
           <WordLift
             text="A private AI operating system —"
             style={{
