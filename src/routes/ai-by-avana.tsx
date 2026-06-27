@@ -924,7 +924,7 @@ function WhatWeBuildSection() {
       {/* ── Mobile: vertical stack, tap to reveal body ── */}
       <div
         className={`${wbCls} md:hidden flex flex-col items-center`}
-        style={{ gap: 20, paddingLeft: 24, paddingRight: 24 }}
+        style={{ gap: 16, paddingLeft: 24, paddingRight: 24 }}
       >
         {WB_CIRCLES.map(({ id, title, body, cls }) => {
           const isActive = activeId === id;
@@ -934,14 +934,14 @@ function WhatWeBuildSection() {
               className={`wb-content-circle ${cls}`}
               onClick={() => setActiveId(isActive ? null : id)}
               style={{
-                width: "min(280px, calc(100vw - 48px))",
-                height: "min(280px, calc(100vw - 48px))",
+                width: 160,
+                height: 160,
                 borderRadius: "50%",
                 background: CIRCLE_BG,
                 border: isActive ? CIRCLE_BORDER_ACTIVE : CIRCLE_BORDER_DEFAULT,
                 display: "grid",
                 placeItems: "center",
-                padding: 22,
+                padding: 16,
                 cursor: "pointer",
                 overflow: "hidden",
                 boxSizing: "border-box",
@@ -954,7 +954,7 @@ function WhatWeBuildSection() {
                     fontFamily: CIRCLE_SERIF,
                     fontStyle: "italic",
                     color: "#E8C36A",
-                    fontSize: "0.95rem",
+                    fontSize: "0.78rem",
                     lineHeight: 1.25,
                     textAlign: "center",
                     whiteSpace: "pre-line",
