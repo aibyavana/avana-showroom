@@ -98,11 +98,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const GA4_ID = import.meta.env.VITE_GA4_ID as string | undefined;
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        {GA4_ID && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA4_ID}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body>
         {children}

@@ -14,5 +14,8 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "VITE_GA4_ID": "G-FBQH81QRB9"
   }
 }
